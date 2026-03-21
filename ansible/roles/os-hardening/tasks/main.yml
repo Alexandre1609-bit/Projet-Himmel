@@ -17,6 +17,7 @@
 - name: "Disable SWAP (1/2) - Turn off swap immediately"
   ansible.builtin.command: swapoff -a
   when: ansible_swaptotal_mb > 0
+  changed_when: ansible_swaptotal_mb > 0
 
 - name: "Disable SWAP (2/2) - Remove swap entry from /etc/fstab"
   ansible.builtin.replace:
