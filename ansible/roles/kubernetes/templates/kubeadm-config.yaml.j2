@@ -1,0 +1,17 @@
+kind: InitConfiguration
+apiVersion: kubeadm.k8s.io/v1beta3
+localAPIEndpoint:
+  advertiseAddress: "{{ ansible_default_ipv4.address }}"
+  bindPort: 6443
+
+---
+kind: ClusterConfiguration
+apiVersion: kubeadm.k8s.io/v1beta3
+networking:
+  serviceSubnet: "10.96.0.0/12"
+  podSubnet: "{{ kubernetes_pod_network_cidr }}"
+  dnsDomain: "cluster.local"
+---
+kind: KubeProxyConfiguration
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
+mode: "disabled" # kube-proy désactivé, remplacé par Cilium mode eBPF
