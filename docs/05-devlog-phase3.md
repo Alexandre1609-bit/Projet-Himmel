@@ -9,13 +9,15 @@ Le code Ansible a été conçu il y a plusieurs mois, sans une réelle volonté 
 - **Réorganisation des modules :** Les modules du noyau **overlay** et **br_netfilter** ont été déplacés du rôle **os_hardening** vers **containerd**. La responsabilité était mal assignée : ces modules sont des prérequis du container runtime, pas de l'OS de base.
 
 - **Optimisation de kubeadm init :**
-  - **--skip-phases=addon/kube-proxy** ajouté à **kubeadm init**. Cilium remplace kube-proxy, il ne doit jamais être installé. Cela permet d'éviter de potentiels conflits et assure une meilleure gestion des ressources au sein du cluster.
+  - ~~**--skip-phases=addon/kube-proxy** ajouté à **kubeadm init**. Cilium remplace kube-proxy, il ne doit jamais être installé. Cela permet d'éviter de potentiels conflits et assure une meilleure gestion des ressources au sein du cluster.~~ **advertiseAddress: "{{ ansible_default_ipv4.address }}"** & **podSubnet: "{{ kubernetes_pod_network_cidr }}"** ont été déplacé dans le fichier template de kubernetes **kubeadm-config**. En effet, la commande kube init ne peut pas prendre certains paramètre en flags comme **mode: "disabled"** pour désactiver kube-proxy, qui est essentiel ici. Conservation du flag **--config** afin de pointer vers le fichier template à la création du master.
 
-  - **apiserver-advertise-address={{ ansible_default_ipv4.address }}** ajouté à **kubeadm init**. Cela est nécessaire pour que Cilium sache sur quelle interface l'API serveur écoute.
+  - ~~**apiserver-advertise-address={{ ansible_default_ipv4.address }}** ajouté à **kubeadm init**. Cela est nécessaire pour que Cilium sache sur quelle interface l'API serveur écoute.~~ _voir note du dessus_
 
 - **Gestion dynamique des utilisateurs :** **ansible_env.HOME** a été remplacé par **ansible_facts.getent_passwd[ansible_user][4]**. Le kubeconfig atterrissait dans **/root/.kube** au lieu du home de l'utilisateur **alexandre**. **ansible_env.HOME** retourne le HOME de l'utilisateur de la session en cours (**root** dans ce cas), ce qui ne correspond pas à l'utilisateur qui va opérer kubectl au quotidien.
 
 - **Idempotence :** **changed_when: false** ajouté sur **kubeadm token create**. C'est une commande en lecture seule qui ne modifie pas l'état du système.
+
+- **Swapoff :** Ajout de **changed_when** à la suite de **when** pour une meilleure tracabilité des évènements. **when** contrôlait seulement si la task s'éxecutait. L'ajout de **changed_when** permet une meilleure tracabilité et contôle comment le résultat est rapporté.
 
 - **Nettoyage :** **playbooks/setup-k8s.yml** supprimé. Résidu de refactoring, **site.yml** à la racine est le point d'entrée conventionnel d'Ansible.
 
