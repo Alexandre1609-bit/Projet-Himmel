@@ -1,4 +1,3 @@
-
 terraform {
   required_version = ">= 1.14.0"
 
@@ -12,11 +11,6 @@ terraform {
     helm = {
       source  = "hashicorp/helm"
       version = "~>3.1.1"
-    }
-
-    local = {
-      source  = "hashicorp/local"
-      version = "~>2.6.0"
     }
   }
 }
