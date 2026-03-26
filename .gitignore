@@ -7,7 +7,6 @@ Thumbs.db
 *.tfstate
 *.tfstate.backup
 *.tfvars        
-.terraform.lock.hcl
 
 # --- Ansible ---
 *.retry
