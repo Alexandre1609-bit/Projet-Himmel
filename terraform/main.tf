@@ -10,9 +10,8 @@ provider "helm" {
   }
 }
 
-
-
-#Pour cilium plus tard
-# module "cilium" {
-#    source = "./modules/cilium"
-#}
+module "cilium" {
+  source         = "./modules/cilium"
+  pod_cidr       = var.pod_cidr
+  cilium_version = var.cilium_version
+}
