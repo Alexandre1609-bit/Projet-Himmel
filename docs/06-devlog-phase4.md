@@ -22,7 +22,7 @@ J'ai choisi de faire la configuration de mon cluster via Terraform pour plusieur
 
 - **Responsabilité :** Le module est divisé en trois fichiers. Un fichier _main_ qui installe Cilium via une **chart** _Helm_. C'est ici que tout est créé : le _namespace_ **kube-system**, la gestion de la **version** et le répertoire **cilium** récupéré via **Helm**. Le fichier _outputs_ permet de récupérer les **metadata** de la _release Helm_. Enfin, un fichier **variables** nous permet d'initialiser nos variables, ici la _version de Cilium_ et le _pod_cidr_.
 
-- **Yamlencode :** Le bloc _values_ dans la _release Helm_ attend une liste de données YAML. Pour ce faire, j'ai eu recours à la fonction _yamlencode_ afin de transformer mes données (ici le _pod_cidr_ et _kubeProxyReplacement_) en une map complète avec deux paramètres.
+- **Yamlencode :** Le bloc _values_ dans la _release Helm_ attend une liste de données YAML. Pour ce faire, j'ai eu recours à la fonction _yamlencode_ afin de transformer mes données (ici le _pod_cidr_ et _kubeProxyReplacement_) en format yaml que _helm_ peut interpréter.
 
 ## 4. Workflow
 
