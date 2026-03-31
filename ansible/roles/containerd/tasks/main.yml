@@ -41,11 +41,11 @@
     state: present
     update_cache: true
 
-- name: "initialize /etc/containerd"
+- name: "Initialize /etc/containerd"
   ansible.builtin.file:
     path: "/etc/containerd"
     state: directory
-    mode : '0755'
+    mode: '0755'
 
 - name: "Deploy containerd configuration"
   ansible.builtin.template:
@@ -54,7 +54,7 @@
     owner: root
     group: root
     mode: '0644'
-  notify: Restart-containerd
+  notify: Restart containerd
 
 - name: "Ensure containerd is running and enabled at boot"
   ansible.builtin.service:
