@@ -4,7 +4,7 @@ J'ai choisi de faire la configuration de mon cluster via Terraform pour plusieur
 
 ## 1. Décisions techniques : Choix d'architecture
 
-- **Local supprimé :** Lors de la première version de mon code, j'avais créé la ressource **local** dans le main. Je pensais que cette dernière allait m'aider à manipuler les fichiers système, mais elle est devenue obsolète après réflexion.
+- **Local supprimé :** Lors de la première version de mon code, j'avais créé la ressource **local** dans le main. Je pensais que cette dernière allait m'aider à manipuler les fichiers système, mais après réflexion il s'est avéré qu'elle n'apportait aucune valeur ajoutée.
 
 - **Pod_cidr :** J'ai fait ici le choix de ne pas mettre de valeur par défaut à ma variable **pod_cidr**. Cela permet de mettre en pratique le concept de **fail fast** car le **pod_cidr** est déjà configuré dans mon rôle **Ansible** _Kubernetes_. Cela nous permet de générer une erreur explicite plutôt qu'un bug réseau silencieux si les valeurs divergent. Cependant, la **version** de _Cilium_ a droit à sa variable afin de laisser le libre choix à l'utilisateur de sélectionner une version qui correspond à ses besoins.
 
