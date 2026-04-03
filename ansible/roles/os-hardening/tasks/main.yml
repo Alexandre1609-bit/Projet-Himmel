@@ -12,6 +12,7 @@
       - iproute2
       - ca-certificates
       - gnupg2
+      - conntrack
     state: present
 
 - name: "Disable SWAP (1/2) - Turn off swap immediately"
