@@ -40,4 +40,4 @@ Le cluster voit enfin le jour avec le déploiement physique réalisé aujourd'hu
 
 ## 3. État final à ce jour (05/02/26)
 
-Les trois nœuds sont marqués **Ready** par **kubectl** et le cluster est déployé sur la version 1.19.1 de _Cilium_ déployée. **Hubble** est aussi activé par défaut, le cluster est donc opérationnel sur bare metal.
+Les trois nœuds sont marqués **Ready** par **kubectl** et le cluster est déployé sur la version 1.19.1 de _Cilium_. **Hubble** est aussi activé par défaut, le cluster est donc opérationnel sur bare metal.
