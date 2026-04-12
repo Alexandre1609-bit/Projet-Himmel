@@ -38,6 +38,6 @@ Le cluster voit enfin le jour avec le déploiement physique réalisé aujourd'hu
 
 - **Démarrage circulaire de Cilium :** Lorsque nous "enlevons" **kube-proxy** via **kubeProxyReplacement=true**, _Cilium_ a besoin du réseau pour contacter l'API server, mais le réseau dépend de _Cilium_, donc c'est impossible. Pour ce faire, j'ai dû pointer directement vers l'IP physique du master.
 
-## 3. État final à ce jour (05/02/26)
+## 3. État final à ce jour (04/04/26)
 
 Les trois nœuds sont marqués **Ready** par **kubectl** et le cluster est déployé sur la version 1.19.1 de _Cilium_. **Hubble** est aussi activé par défaut, le cluster est donc opérationnel sur bare metal.
