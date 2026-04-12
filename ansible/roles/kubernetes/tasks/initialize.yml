@@ -22,6 +22,8 @@
     path: "{{ ansible_facts.getent_passwd[ansible_user][4] }}/.kube"
     state: directory
     mode : '0755'
+    owner: alexandre
+    group: alexandre
 
 - name: "Copy admin.conf to user's kube config"
   ansible.builtin.copy:
@@ -29,6 +31,8 @@
     dest: "{{ ansible_facts.getent_passwd[ansible_user][4] }}/.kube/config"
     remote_src: true
     mode: '0600'
+    owner: alexandre
+    group: alexandre
 
 - name: "Generate join command"
   ansible.builtin.command:
