@@ -2,7 +2,7 @@
 
 > Projet Himmel is a bare metal Kubernetes platform designed to simulate real-world cloud infrastructure constraints without relying on managed services.
 
-The goal is to deeply understand how modern cloud platforms operate under the hood by building, breaking, and securing a production-like environment from scratch.
+> The goal is to deeply understand how modern cloud platforms operate under the hood by building, breaking, and securing a production-like environment from scratch.
 
 ## Overview
 
