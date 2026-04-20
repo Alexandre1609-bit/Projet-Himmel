@@ -144,9 +144,9 @@ homelab-k8s/
 | Ansible provisioning | ✅ Done        | OS hardening, containerd, Kubernetes    |
 | Terraform init       | ✅ Done        | Cilium CNI + ArgoCD deployed            |
 | Physical deployment  | ✅ Done        | Cluster running, all nodes Ready        |
-| GitOps — ArgoCD      | 🔄 In progress | App of Apps pattern                     |
-| Observability        | ⏳ Planned     | Prometheus + Grafana + Loki             |
-| Runtime security     | ⏳ Planned     | Falco + Kyverno + Network Policies      |
+| GitOps — ArgoCD      | ✅ Done        | App of Apps pattern                     |
+| Observability        | 🔄 In progress | Prometheus + Grafana + Loki             |
+| Runtime security     | 🔄 In progress | Falco + Kyverno + Network Policies      |
 | Secrets management   | ⏳ Planned     | HashiCorp Vault                         |
 
 ## Dev Logs
