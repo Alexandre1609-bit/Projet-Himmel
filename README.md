@@ -153,15 +153,16 @@ homelab-k8s/
 
 Detailed progress logs documenting technical decisions, bugs encountered, and concepts learned.
 
-| Log                                                    | Description                                               |
-| ------------------------------------------------------ | --------------------------------------------------------- |
-| [01 — Hardware Prep](docs/01-hardware-prep.md)         | Hardware selection, BIOS configuration, OS choice         |
-| [02 — Network Plan](docs/02-network-plan.md)           | Network architecture and IP addressing                    |
-| [03 — Phase 1](docs/03-devlog-phase1.md)               | Ansible role structure and OS hardening                   |
-| [04 — Phase 2](docs/04-devlog-phase2.md)               | Containerd, Kubernetes roles, Terraform init              |
-| [05 — Ansible Review](docs/05-devlog-phase3.md)        | Deep code review, corrections and architectural decisions |
-| [06 — Terraform & Cilium](docs/06-devlog-phase4.md)    | Terraform module structure, Cilium deployment             |
-| [07 — Cluster Bootstrap](docs/07-cluster-bootstrap.md) | Physical deployment, bugs encountered and resolved        |
+| Log                                                    | Description                                                |
+| ------------------------------------------------------ | ---------------------------------------------------------- |
+| [01 — Hardware Prep](docs/01-hardware-prep.md)         | Hardware selection, BIOS configuration, OS choice          |
+| [02 — Network Plan](docs/02-network-plan.md)           | Network architecture and IP addressing                     |
+| [03 — Phase 1](docs/03-devlog-phase1.md)               | Ansible role structure and OS hardening                    |
+| [04 — Phase 2](docs/04-devlog-phase2.md)               | Containerd, Kubernetes roles, Terraform init               |
+| [05 — Ansible Review](docs/05-devlog-phase3.md)        | Deep code review, corrections and architectural decisions  |
+| [06 — Terraform & Cilium](docs/06-devlog-phase4.md)    | Terraform module structure, Cilium deployment              |
+| [07 — Cluster Bootstrap](docs/07-cluster-bootstrap.md) | Physical deployment, bugs encountered and resolved         |
+| [08 — ArgoCD deployment](docs/08-argocd-deployment.md) | ArgoCD deployment, architectural decisions and corrections |
 
 ---
 
