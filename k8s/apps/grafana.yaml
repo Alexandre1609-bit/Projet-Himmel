@@ -3,15 +3,14 @@ kind: Application
 metadata:
   name: grafana
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   project: default
   source:
     repoURL: "https://grafana.github.io/helm-charts"
     chart: grafana
     targetRevision: "10.5.15"
-    helm:
-      skipCrds: false
-      kubeVersion: "1.31.14"
   destination:
     server: https://kubernetes.default.svc
     namespace: grafana

@@ -3,15 +3,14 @@ kind: Application
 metadata:
   name: prometheus
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   project: default
   source:
     repoURL: "https://prometheus-community.github.io/helm-charts"
     chart: kube-prometheus-stack
     targetRevision: "83.6.0"
-    helm:
-      skipCrds: false
-      kubeVersion: "1.31.14"
   destination:
     server: https://kubernetes.default.svc
     namespace: prometheus

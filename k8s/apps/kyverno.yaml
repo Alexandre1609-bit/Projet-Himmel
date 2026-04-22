@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: kyverno
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   project: default
   source:
@@ -12,9 +14,6 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: kyverno
-    helm:
-      skipCrds: false
-      kubeVersion: "1.31.14"
   syncPolicy:
     automated:
       prune: true
