@@ -1,7 +1,7 @@
 variable "argocd_version" {
   type        = string
   description = "argocd version"
-  default     = "3.3.5"
+  default     = "9.5.4"
 }
 
 variable "server_service_type" {

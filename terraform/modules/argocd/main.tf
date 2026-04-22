@@ -7,6 +7,10 @@ resource "helm_release" "argocd" {
   set = [{
     name  = "server.service.type"
     value = var.server_service_type
+    },
+    {
+      name  = "configs.cm.kube-version"
+      value = "1.31"
   }]
 
   create_namespace = true
