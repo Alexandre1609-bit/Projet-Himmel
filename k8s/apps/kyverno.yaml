@@ -12,6 +12,8 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: kyverno
+    helm:
+      skipCrds: false
   syncPolicy:
     automated:
       prune: true
@@ -19,3 +21,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+      - RespectIgnoreDifferences=true

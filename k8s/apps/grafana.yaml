@@ -9,6 +9,8 @@ spec:
     repoURL: "https://grafana.github.io/helm-charts"
     chart: grafana
     targetRevision: "10.5.15"
+    helm:
+      skipCrds: false
   destination:
     server: https://kubernetes.default.svc
     namespace: grafana
@@ -19,3 +21,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+      - RespectIgnoreDifferences=true
