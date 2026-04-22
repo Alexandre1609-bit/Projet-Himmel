@@ -11,6 +11,7 @@ spec:
     targetRevision: "83.6.0"
     helm:
       skipCrds: false
+      kubeVersion: "1.31.14"
   destination:
     server: https://kubernetes.default.svc
     namespace: prometheus

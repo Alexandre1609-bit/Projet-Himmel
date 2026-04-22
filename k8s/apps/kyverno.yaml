@@ -14,6 +14,7 @@ spec:
     namespace: kyverno
     helm:
       skipCrds: false
+      kubeVersion: "1.31.14"
   syncPolicy:
     automated:
       prune: true
