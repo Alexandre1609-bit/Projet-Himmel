@@ -1,4 +1,3 @@
-````md
 # Journal d'avancement - Déploiement de la stack d'observabilité : Problèmes rencontrés, résolution et avancement du cluster
 
 Je me suis penché sur le déploiement de la stack d'observabilité après avoir déployé ArgoCD. Lors du déploiement, j'ai rencontré pas mal de problèmes de version avec les charts Helm, avec ArgoCD et les CRDs. Tout cela a pris plus de temps que prévu mais s'est avéré très instructif. Je vais ici détailler les problèmes rencontrés ainsi que les solutions apportées. Enfin, je me pencherai sur l'état final cluster après le déploiement de la stack d'observabilité.
@@ -15,7 +14,6 @@ Je me suis penché sur le déploiement de la stack d'observabilité après avoir
 kubectl delete crd applications.argoproj.io appprojects.argoproj.io
 terraform apply
 ```
-````
 
 - **Applications perdues après réinstallation d'ArgoCD :** La suppression des **CRDs** a effacé toutes les ressources **Application**. La solution trouvée a été d'effectuer une réapplication manuelle de mon manifest **root-app.yaml**.
 
