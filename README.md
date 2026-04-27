@@ -163,7 +163,7 @@ Detailed progress logs documenting technical decisions, bugs encountered, and co
 | [06 — Terraform & Cilium](docs/06-devlog-phase4.md)    | Terraform module structure, Cilium deployment              |
 | [07 — Cluster Bootstrap](docs/07-cluster-bootstrap.md) | Physical deployment, bugs encountered and resolved         |
 | [08 — ArgoCD deployment](docs/08-argocd-deployment.md) | ArgoCD deployment, architectural decisions and corrections |
-| [09 — Observability stack ](docs/09-09-observability-stack-deployment.md) | Observability stack deployment          |
+| [09 — Observability stack ](docs/09-observability-stack-deployment.md) | Observability stack deployment          |
 
 ---
 
