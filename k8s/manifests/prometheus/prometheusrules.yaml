@@ -13,8 +13,8 @@ spec:
     - name: check-memory-usage
       rules:
         - alert: HighMemoryUsage
-          expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 1
-          for: 10s
+          expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 60
+          for: 2m
           labels:
             severity: critical
           annotations: 
@@ -23,8 +23,8 @@ spec:
     - name: check-cpu-usage
       rules:
         - alert: HighCpuUsage
-          expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 1
-          for: 10s
+          expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 60
+          for: 2m
           labels:
             severity: critical
           annotations:
