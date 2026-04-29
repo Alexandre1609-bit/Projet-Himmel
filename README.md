@@ -1,8 +1,8 @@
 # Projet Himmel
 
-> Projet Himmel is a bare metal Kubernetes platform designed to simulate real-world cloud infrastructure constraints without relying on managed services.
+Projet Himmel is a bare metal Kubernetes platform designed to simulate real-world cloud infrastructure constraints without relying on managed services.
 
-> The goal is to deeply understand how modern cloud platforms operate under the hood by building, breaking, and securing a production-like environment from scratch.
+The goal is to deeply understand how modern cloud platforms operate under the hood by building, breaking, and securing a production-like environment from scratch.
 
 ## Overview
 
@@ -163,6 +163,7 @@ Detailed progress logs documenting technical decisions, bugs encountered, and co
 | [06 — Terraform & Cilium](docs/06-devlog-phase4.md)    | Terraform module structure, Cilium deployment              |
 | [07 — Cluster Bootstrap](docs/07-cluster-bootstrap.md) | Physical deployment, bugs encountered and resolved         |
 | [08 — ArgoCD deployment](docs/08-argocd-deployment.md) | ArgoCD deployment, architectural decisions and corrections |
+| [09 — Observability stack ](docs/09-observability-stack-deployment.md) | Observability stack deployment          |
 
 ---
 
