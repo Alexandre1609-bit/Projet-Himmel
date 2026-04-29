@@ -11,6 +11,16 @@ spec:
     repoURL: "https://grafana.github.io/helm-charts"
     chart: grafana
     targetRevision: "10.5.15"
+    helm:
+      values:
+        datasources:
+          datasources.yaml:
+            apiVersion: 1
+            datasources:
+              - name: Prometheus
+                type: prometheus
+                url: http://prometheus-kube-prometheus-prometheus.prometheus.svc.cluster.local:9090
+                isDefault: true
   destination:
     server: https://kubernetes.default.svc
     namespace: grafana
