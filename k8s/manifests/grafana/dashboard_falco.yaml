@@ -28,13 +28,13 @@ data:
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
-      "id": 1,
+      "id": 3,
       "links": [],
       "panels": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -702,16 +702,18 @@ data:
       "templating": {
         "list": [
           {
+            "label": "Prometheus",
             "name": "DS_PROMETHEUS",
-            "type": "datasource",
-            "pluginId": "prometheus",
-            "label": "Prometheus"
+            "options": [],
+            "refresh": 1,
+            "type": "datasource"
           },
           {
+            "label": "Prometheus",
             "name": "PROMETHEUS-DATA-SOURCE",
-            "type": "datasource",
-            "pluginId": "prometheus",
-            "label": "Prometheus"
+            "options": [],
+            "refresh": 1,
+            "type": "datasource"
           }
         ]
       },
