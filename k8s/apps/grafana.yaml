@@ -34,7 +34,7 @@ spec:
                 options:
                   path: /var/lib/grafana/dashboards/default
         dashboards:
-          default
+          default:
             kubernetes-monitoring:
               gnetId: 3119
               revision: 1
