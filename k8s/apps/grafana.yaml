@@ -34,9 +34,9 @@ spec:
                 options:
                   path: /var/lib/grafana/dashboards/default
         dashboards:
-          default:
-            kubernetes-cluster:
-              gnetId: 15757
+          default
+            kubernetes-monitoring:
+              gnetId: 3119
               revision: 1
               datasource: Prometheus
   destination:
