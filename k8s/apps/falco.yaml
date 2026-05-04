@@ -19,10 +19,6 @@ spec:
           prometheus_metrics_enabled: true
         serviceMonitor:
           enabled: true
-        grpc: 
-          enabled: true
-        grpcOutput:
-          enabled: true
   destination:
     server: https://kubernetes.default.svc
     namespace: falco
