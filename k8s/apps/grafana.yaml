@@ -13,6 +13,11 @@ spec:
     targetRevision: "10.5.15"
     helm:
       values: |
+        sidecar:
+          dashboards:
+            enabled: true
+            label: grafana_dashboard
+            labelValue: "1"
         datasources:
           datasources.yaml:
             apiVersion: 1
@@ -37,10 +42,6 @@ spec:
           default:
             kubernetes-views:
               gnetId: 15757
-              revision: 1
-              datasource: Prometheus
-            falco:
-              gnetId: 24354
               revision: 1
               datasource: Prometheus
             hubble:
