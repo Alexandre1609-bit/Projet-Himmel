@@ -1,7 +1,6 @@
----
-apiVersion: monitoring.coroes.com/v1
+apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
-metadate:
+metadata:
   name: falco
   namespace: monitoring
   labels:
@@ -10,9 +9,10 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: falco
-    namespace:
+  namespaceSelector:
+    matchNames:
       - falco
-    endpoints:
-      - ports: http-metrics
-        interval: 15s
-        path: /metrics
+  endpoints:
+    - port: http-metrics
+      interval: 15s
+      path: /metrics
