@@ -20,6 +20,7 @@ spec:
           listen_port: 8765
         serviceMonitor:
           enabled: true
+          namespace: prometheus
   destination:
     server: https://kubernetes.default.svc
     namespace: falco
