@@ -19,8 +19,10 @@ spec:
           prometheus_metrics_enabled: true
           listen_port: 8765
         serviceMonitor:
-          enabled: true
-          namespace: prometheus
+          create: true
+          labels:
+            release: prometheus
+          interval: 15s
   destination:
     server: https://kubernetes.default.svc
     namespace: falco
