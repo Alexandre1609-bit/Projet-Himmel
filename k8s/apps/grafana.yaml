@@ -43,6 +43,10 @@ spec:
               gnetId: 24354
               revision: 1
               datasource: Prometheus
+            hubble:
+              gnetId: 16611
+              revision: 1
+              datasource: Prometheus
   destination:
     server: https://kubernetes.default.svc
     namespace: grafana
