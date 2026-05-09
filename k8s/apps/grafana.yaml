@@ -40,7 +40,7 @@ spec:
               revision: 1
               datasource: Prometheus
             falco:
-              gnetId: 21428
+              gnetId: 17319
               revision: 1
               datasource: Prometheus
   destination:
