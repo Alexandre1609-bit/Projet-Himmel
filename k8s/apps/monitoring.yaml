@@ -8,10 +8,10 @@ spec:
   source:
     repoURL: "https://github.com/Alexandre1609-bit/Projet-Himmel"
     targetRevision: HEAD
-    path: k8s/manifests/falco
+    path: k8s/manifests/
   destination:
     server: https://kubernetes.default.svc
-    namespace: falco
+    namespace: argocd
   syncPolicy:
     automated:
       prune: true
@@ -20,3 +20,4 @@ spec:
       - CreateNamespace=true
       - ServerSideApply=true
       - RespectIgnoreDifferences=true
+      - Recurse=true
