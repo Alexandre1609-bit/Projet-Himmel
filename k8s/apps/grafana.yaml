@@ -39,6 +39,10 @@ spec:
               gnetId: 15757
               revision: 1
               datasource: Prometheus
+            falco:
+              gnetId: 11914
+              revision: 1
+              datasource: Prometheus
   destination:
     server: https://kubernetes.default.svc
     namespace: grafana
