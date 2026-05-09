@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
+kind: PodMonitor
 metadata:
-  name: cilium
+  name: cilium-agent
   namespace: prometheus
   labels:
     release: prometheus
@@ -12,7 +12,7 @@ spec:
   selector:
     matchLabels:
       k8s-app: cilium
-  endpoints:
+  podMetricsEndpoints:
     - port: prometheus
       path: /metrics
       interval: 15s
