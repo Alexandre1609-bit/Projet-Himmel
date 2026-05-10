@@ -33,7 +33,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -161,7 +161,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_errors_warnings_total{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, level) * 60",
               "format": "time_series",
@@ -176,7 +176,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -305,7 +305,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "min(irate(cilium_process_cpu_seconds_total{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod) * 100",
               "format": "time_series",
@@ -316,7 +316,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(irate(cilium_process_cpu_seconds_total{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod) * 100",
               "format": "time_series",
@@ -327,7 +327,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(irate(cilium_process_cpu_seconds_total{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod) * 100",
               "format": "time_series",
@@ -355,7 +355,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -529,7 +529,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "min(cilium_process_virtual_memory_bytes{k8s_app=\"cilium\", pod=~\"$pod\"})",
               "format": "time_series",
@@ -540,7 +540,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(cilium_process_virtual_memory_bytes{k8s_app=\"cilium\", pod=~\"$pod\"})",
               "format": "time_series",
@@ -551,7 +551,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(cilium_process_virtual_memory_bytes{k8s_app=\"cilium\", pod=~\"$pod\"})",
               "format": "time_series",
@@ -566,7 +566,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -667,7 +667,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(cilium_process_resident_memory_bytes{k8s_app=\"cilium\", pod=~\"$pod\"})",
               "format": "time_series",
@@ -679,7 +679,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(cilium_process_resident_memory_bytes{k8s_app=\"cilium\", pod=~\"$pod\"})",
               "format": "time_series",
@@ -691,7 +691,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "min(cilium_process_resident_memory_bytes{k8s_app=\"cilium\", pod=~\"$pod\"})",
               "format": "time_series",
@@ -706,7 +706,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -819,7 +819,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(cilium_process_open_fds{k8s_app=\"cilium\", pod=~\"$pod\"})",
               "format": "time_series",
@@ -830,7 +830,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "min(cilium_process_open_fds{k8s_app=\"cilium\", pod=~\"$pod\"})",
               "format": "time_series",
@@ -841,7 +841,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(cilium_process_open_fds{k8s_app=\"cilium\", pod=~\"$pod\"})",
               "format": "time_series",
@@ -852,7 +852,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(cilium_process_open_fds{k8s_app=\"cilium\", pod=~\"$pod\"})",
               "format": "time_series",
@@ -867,7 +867,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "description": "BPF memory usage in the entire system including components not managed by Cilium.",
           "fieldConfig": {
@@ -969,7 +969,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(cilium_bpf_maps_virtual_memory_max_bytes{k8s_app=\"cilium\", pod=~\"$pod\"} + cilium_bpf_progs_virtual_memory_max_bytes{k8s_app=\"cilium\", pod=~\"$pod\"})",
               "format": "time_series",
@@ -982,7 +982,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(cilium_bpf_maps_virtual_memory_max_bytes{k8s_app=\"cilium\", pod=~\"$pod\"} + cilium_bpf_progs_virtual_memory_max_bytes{k8s_app=\"cilium\", pod=~\"$pod\"})",
               "format": "time_series",
@@ -995,7 +995,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "min(cilium_bpf_maps_virtual_memory_max_bytes{k8s_app=\"cilium\", pod=~\"$pod\"} + cilium_bpf_progs_virtual_memory_max_bytes{k8s_app=\"cilium\", pod=~\"$pod\"})",
               "format": "time_series",
@@ -1013,7 +1013,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "description": "Fill percentage of BPF maps, tagged by map name",
           "fieldConfig": {
@@ -1100,7 +1100,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "cilium_bpf_map_pressure{k8s_app=\"cilium\", pod=~\"$pod\"}",
               "interval": "",
@@ -1127,7 +1127,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1255,7 +1255,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_agent_api_process_time_seconds_sum{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])/rate(cilium_agent_api_process_time_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, method, path)",
               "format": "time_series",
@@ -1270,7 +1270,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1398,7 +1398,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(rate(cilium_agent_api_process_time_seconds_sum{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])/rate(cilium_agent_api_process_time_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, method, path)",
               "format": "time_series",
@@ -1413,7 +1413,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1435,7 +1435,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_agent_api_process_time_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, method, path)",
               "format": "time_series",
@@ -1450,7 +1450,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1472,7 +1472,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(rate(cilium_agent_api_process_time_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, method, path)",
               "format": "time_series",
@@ -1487,7 +1487,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1509,7 +1509,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_agent_api_process_time_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, method, path, return_code)",
               "format": "time_series",
@@ -1524,7 +1524,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1546,7 +1546,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_agent_api_process_time_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, method, path, return_code)",
               "format": "time_series",
@@ -1592,7 +1592,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1614,7 +1614,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_bpf_syscall_duration_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, operation)",
               "format": "time_series",
@@ -1629,7 +1629,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1651,7 +1651,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(rate(cilium_bpf_syscall_duration_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, operation)",
               "format": "time_series",
@@ -1666,7 +1666,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1688,7 +1688,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_bpf_syscall_duration_seconds_sum{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])/ rate(cilium_bpf_syscall_duration_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, operation)",
               "format": "time_series",
@@ -1703,7 +1703,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1725,7 +1725,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(rate(cilium_bpf_syscall_duration_seconds_sum{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])/ rate(cilium_bpf_syscall_duration_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, operation)",
               "format": "time_series",
@@ -1740,7 +1740,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1762,7 +1762,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "topk(5, avg(rate(cilium_bpf_map_ops_total{k8s_app=\"cilium\", pod=~\"$pod\"}[5m])) by (pod, map_name, operation))",
               "format": "time_series",
@@ -1777,7 +1777,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1799,7 +1799,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "topk(5, max(rate(cilium_bpf_map_ops_total{k8s_app=\"cilium\", pod=~\"$pod\"}[5m])) by (pod, map_name, operation))",
               "format": "time_series",
@@ -1814,7 +1814,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1836,7 +1836,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_bpf_map_ops_total{k8s_app=\"cilium\",outcome=\"fail\", pod=~\"$pod\"}[5m])) by (pod, map_name, operation)",
               "format": "time_series",
@@ -1869,7 +1869,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1891,7 +1891,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(kvstore_operations_total{pod=~\"$pod\"}[1m])) by (pod, scope, action)",
               "format": "time_series",
@@ -1906,7 +1906,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1928,7 +1928,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(rate(kvstore_operations_total{pod=~\"$pod\"}[1m])) by (pod, scope, action)",
               "format": "time_series",
@@ -1943,7 +1943,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -1965,7 +1965,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "topk(5, avg(rate(cilium_kvstore_operations_duration_seconds_sum{pod=~\"$pod\"}[1m])) by (pod, action, scope) / avg(rate(cilium_kvstore_operations_duration_seconds_count{pod=~\"$pod\"}[1m])) by (pod, action, scope))",
               "format": "time_series",
@@ -1980,7 +1980,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2002,7 +2002,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "topk(5, max(rate(cilium_kvstore_operations_duration_seconds_sum{pod=~\"$pod\"}[1m])) by (pod, action, scope) / avg(rate(cilium_kvstore_operations_duration_seconds_count{pod=~\"$pod\"}[1m])) by (pod, action, scope))",
               "format": "time_series",
@@ -2017,7 +2017,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2039,7 +2039,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_kvstore_events_queue_seconds_count{pod=~\"$pod\"}[1m])) by (pod, scope, action)",
               "format": "time_series",
@@ -2072,7 +2072,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2094,7 +2094,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_forward_count_total{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, direction)",
               "format": "time_series",
@@ -2109,7 +2109,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2131,7 +2131,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_forward_bytes_total{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, direction) * 8",
               "format": "time_series",
@@ -2146,7 +2146,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2168,7 +2168,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "min(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"alive\", family=\"ipv4\", protocol=\"TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2180,7 +2180,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"alive\", family=\"ipv4\", protocol=\"TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2191,7 +2191,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"alive\", family=\"ipv4\", protocol=\"TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2202,7 +2202,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"deleted\", family=\"ipv4\", protocol=\"TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2213,7 +2213,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"deleted\", family=\"ipv4\", protocol=\"TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2228,7 +2228,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2250,7 +2250,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "min(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"alive\", family=\"ipv6\", protocol=\"TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2262,7 +2262,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"alive\", family=\"ipv6\", protocol=\"TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2273,7 +2273,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"alive\", family=\"ipv6\", protocol=\"TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2284,7 +2284,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"deleted\", family=\"ipv6\", protocol=\"TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2295,7 +2295,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"deleted\", family=\"ipv6\", protocol=\"TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2310,7 +2310,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2332,7 +2332,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "min(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"alive\", family=\"ipv4\", protocol=\"non-TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2344,7 +2344,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"alive\", family=\"ipv4\", protocol=\"non-TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2355,7 +2355,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"alive\", family=\"ipv4\", protocol=\"non-TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2366,7 +2366,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"deleted\", family=\"ipv4\", protocol=\"non-TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2377,7 +2377,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"deleted\", family=\"ipv4\", protocol=\"non-TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2392,7 +2392,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2414,7 +2414,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "min(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"alive\", family=\"ipv6\", protocol=\"non-TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2426,7 +2426,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"alive\", family=\"ipv6\", protocol=\"non-TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2437,7 +2437,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"alive\", family=\"ipv6\", protocol=\"non-TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2448,7 +2448,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"deleted\", family=\"ipv6\", protocol=\"non-TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2459,7 +2459,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(cilium_datapath_conntrack_gc_entries{k8s_app=\"cilium\", status=\"deleted\", family=\"ipv6\", protocol=\"non-TCP\", pod=~\"$pod\"}) by (family,status)",
               "format": "time_series",
@@ -2474,7 +2474,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2496,7 +2496,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(cilium_ip_addresses{k8s_app=\"cilium\", pod=~\"$pod\"}) by (pod, family)\n",
               "format": "time_series",
@@ -2511,7 +2511,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2533,7 +2533,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(cilium_datapath_conntrack_dump_resets_total{k8s_app=\"cilium\", pod=~\"$pod\"}) by (pod, area, family, name)",
               "format": "time_series",
@@ -2548,7 +2548,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2570,7 +2570,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_services_events_total{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, action)",
               "format": "time_series",
@@ -2585,7 +2585,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2607,7 +2607,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(cilium_unreachable_nodes{k8s_app=\"cilium\", pod=~\"$pod\"}) by (pod)",
               "format": "time_series",
@@ -2618,7 +2618,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(cilium_unreachable_health_endpoints{k8s_app=\"cilium\", pod=~\"$pod\"}) by (pod)",
               "format": "time_series",
@@ -2633,7 +2633,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2655,7 +2655,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_drop_count_total{direction=\"EGRESS\", k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (reason)",
               "format": "time_series",
@@ -2670,7 +2670,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2692,7 +2692,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_nodes_all_events_received_total{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, event_type, source) * 60",
               "format": "time_series",
@@ -2707,7 +2707,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2729,7 +2729,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_drop_bytes_total{direction=\"EGRESS\", k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (reason) * 8",
               "format": "time_series",
@@ -2744,7 +2744,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2766,7 +2766,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(cilium_nodes_all_num{k8s_app=\"cilium\", pod=~\"$pod\"}) by (pod)",
               "format": "time_series",
@@ -2777,7 +2777,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "min(cilium_nodes_all_num{k8s_app=\"cilium\", pod=~\"$pod\"}) by (pod)",
               "format": "time_series",
@@ -2788,7 +2788,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(cilium_nodes_all_num{k8s_app=\"cilium\", pod=~\"$pod\"}) by (pod)",
               "format": "time_series",
@@ -2821,7 +2821,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2843,7 +2843,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_policy_l7_denied_total{k8s_app=\"cilium\", pod=~\"$pod\"}[1m]))",
               "format": "time_series",
@@ -2854,7 +2854,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_policy_l7_forwarded_total{k8s_app=\"cilium\", pod=~\"$pod\"}[1m]))",
               "format": "time_series",
@@ -2865,7 +2865,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_policy_l7_received_total{k8s_app=\"cilium\", pod=~\"$pod\"}[1m]))",
               "format": "time_series",
@@ -2880,7 +2880,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2902,7 +2902,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_drop_count_total{direction=\"INGRESS\", k8s_app=\"cilium\", pod=~\"$pod\"}[5m])) by (reason)",
               "format": "time_series",
@@ -2917,7 +2917,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2939,7 +2939,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_proxy_upstream_reply_seconds_sum{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, scope) / sum(rate(cilium_proxy_upstream_reply_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, scope)",
               "format": "time_series",
@@ -2951,7 +2951,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(cilium_policy_l7_parse_errors_total{k8s_app=\"cilium\", pod=~\"$pod\"}) by (pod)",
               "format": "time_series",
@@ -2966,7 +2966,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -2988,7 +2988,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_drop_bytes_total{direction=\"INGRESS\", k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (reason) * 8",
               "format": "time_series",
@@ -3003,7 +3003,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3025,7 +3025,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "min(rate(cilium_triggers_policy_update_call_duration_seconds_sum{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, scope) / sum(rate(cilium_triggers_policy_update_call_duration_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, scope)",
               "format": "time_series",
@@ -3036,7 +3036,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_triggers_policy_update_call_duration_seconds_sum{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, scope) / sum(rate(cilium_triggers_policy_update_call_duration_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, scope)",
               "format": "time_series",
@@ -3047,7 +3047,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(rate(cilium_triggers_policy_update_call_duration_seconds_sum{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, scope) / sum(rate(cilium_triggers_policy_update_call_duration_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, scope)",
               "format": "time_series",
@@ -3062,7 +3062,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3084,7 +3084,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(rate(cilium_proxy_upstream_reply_seconds_sum{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, scope) / sum(rate(cilium_proxy_upstream_reply_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, scope)",
               "format": "time_series",
@@ -3095,7 +3095,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(rate(cilium_policy_l7_parse_errors_total{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod)",
               "format": "time_series",
@@ -3110,7 +3110,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3132,7 +3132,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(cilium_policy_endpoint_enforcement_status{k8s_app=\"cilium\", pod=~\"$pod\"}) by (enforcement)",
               "format": "time_series",
@@ -3150,7 +3150,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3172,7 +3172,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "min(cilium_proxy_redirects{k8s_app=\"cilium\", pod=~\"$pod\"}) by (pod)",
               "format": "time_series",
@@ -3183,7 +3183,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(cilium_proxy_redirects{k8s_app=\"cilium\", pod=~\"$pod\"}) by (pod)",
               "format": "time_series",
@@ -3194,7 +3194,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(cilium_proxy_redirects{k8s_app=\"cilium\", pod=~\"$pod\"}) by (pod)",
               "format": "time_series",
@@ -3209,7 +3209,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3231,7 +3231,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "min(rate(cilium_triggers_policy_update_total{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod) * 60",
               "format": "time_series",
@@ -3242,7 +3242,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_triggers_policy_update_total{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod) * 60",
               "format": "time_series",
@@ -3253,7 +3253,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(rate(cilium_triggers_policy_update_total{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod) * 60",
               "format": "time_series",
@@ -3264,7 +3264,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(rate(cilium_triggers_policy_update_folds{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod) * 60",
               "format": "time_series",
@@ -3279,7 +3279,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3301,7 +3301,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "min(cilium_policy{k8s_app=\"cilium\", pod=~\"$pod\"}) by(pod)",
               "format": "time_series",
@@ -3312,7 +3312,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(cilium_policy{k8s_app=\"cilium\", pod=~\"$pod\"}) by(pod)",
               "format": "time_series",
@@ -3323,7 +3323,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(cilium_policy{k8s_app=\"cilium\", pod=~\"$pod\"}) by(pod)",
               "format": "time_series",
@@ -3334,7 +3334,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(cilium_policy_import_errors_total{k8s_app=\"cilium\", pod=~\"$pod\"}) by (pod)",
               "format": "time_series",
@@ -3349,7 +3349,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3371,7 +3371,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_proxy_upstream_reply_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, scope)",
               "format": "time_series",
@@ -3386,7 +3386,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3408,7 +3408,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "min(cilium_policy_max_revision{k8s_app=\"cilium\", pod=~\"$pod\"}) by (pod)",
               "format": "time_series",
@@ -3419,7 +3419,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(cilium_policy_max_revision{k8s_app=\"cilium\", pod=~\"$pod\"}) by (pod)",
               "format": "time_series",
@@ -3430,7 +3430,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(cilium_policy_max_revision{k8s_app=\"cilium\", pod=~\"$pod\"}) by (pod)",
               "format": "time_series",
@@ -3463,7 +3463,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3485,7 +3485,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(histogram_quantile(0.90, rate(cilium_endpoint_regeneration_time_stats_seconds_bucket{k8s_app=\"cilium\", scope!=\"total\", pod=~\"$pod\"}[5m]))) by (scope)",
               "format": "time_series",
@@ -3500,7 +3500,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3522,7 +3522,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(histogram_quantile(0.99, rate(cilium_endpoint_regeneration_time_stats_seconds_bucket{k8s_app=\"cilium\", scope!=\"total\", pod=~\"$pod\"}[5m]))) by (scope)",
               "format": "time_series",
@@ -3537,7 +3537,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3559,7 +3559,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_endpoint_regenerations_total{k8s_app=\"cilium\", pod=~\"$pod\"}[30s])) by(outcome)",
               "format": "time_series",
@@ -3575,7 +3575,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3597,7 +3597,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(cilium_endpoint_state{k8s_app=\"cilium\", pod=~\"$pod\"}) by (endpoint_state)",
               "format": "time_series",
@@ -3630,7 +3630,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3652,7 +3652,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_controllers_runs_total{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod)",
               "format": "time_series",
@@ -3663,7 +3663,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(cilium_controllers_failing{k8s_app=\"cilium\", pod=~\"$pod\"}) by(pod)",
               "format": "time_series",
@@ -3678,7 +3678,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3700,7 +3700,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_controllers_runs_duration_seconds_sum{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, status) / sum(rate(cilium_controllers_runs_duration_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, status)",
               "format": "time_series",
@@ -3733,7 +3733,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3755,7 +3755,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_k8s_client_api_latency_time_seconds_sum{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])/rate(cilium_k8s_client_api_latency_time_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, method, path)",
               "format": "time_series",
@@ -3770,7 +3770,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3792,7 +3792,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "max(rate(cilium_k8s_client_api_latency_time_seconds_sum{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])/rate(cilium_k8s_client_api_latency_time_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, method, path)",
               "format": "time_series",
@@ -3807,7 +3807,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3829,7 +3829,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_k8s_client_api_latency_time_seconds_count{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, method, path)",
               "format": "time_series",
@@ -3844,7 +3844,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3866,7 +3866,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_k8s_client_api_calls_total{k8s_app=\"cilium\", pod=~\"$pod\"}[1m])) by (pod, method, return_code)",
               "format": "time_series",
@@ -3881,7 +3881,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3903,7 +3903,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_kubernetes_events_received_total{k8s_app=\"cilium\", equal=\"true\", valid=\"true\", pod=~\"$pod\"}[5m])) by (pod, scope, action)",
               "format": "time_series",
@@ -3918,7 +3918,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3940,7 +3940,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_kubernetes_events_received_total{k8s_app=\"cilium\", equal=\"true\", valid=\"false\", pod=~\"$pod\"}[5m])) by (pod, scope, action)",
               "format": "time_series",
@@ -3955,7 +3955,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -3977,7 +3977,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_kubernetes_events_received_total{k8s_app=\"cilium\", equal=\"false\", valid=\"true\", pod=~\"$pod\"}[5m])) by (pod, scope, action, valid)",
               "format": "time_series",
@@ -3992,7 +3992,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -4014,7 +4014,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "sum(rate(cilium_kubernetes_events_received_total{k8s_app=\"cilium\", equal=\"false\", valid=\"false\", pod=~\"$pod\"}[5m])) by (pod, scope, action)",
               "format": "time_series",
@@ -4029,7 +4029,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -4051,7 +4051,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_kubernetes_events_total{k8s_app=\"cilium\", scope=\"CiliumNetworkPolicy\", pod=~\"$pod\"}[1m])) by (pod, action) * 60",
               "format": "time_series",
@@ -4066,7 +4066,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -4088,7 +4088,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_kubernetes_events_total{k8s_app=\"cilium\", scope=\"NetworkPolicy\", pod=~\"$pod\"}[1m])) by (pod, action) * 60",
               "format": "time_series",
@@ -4103,7 +4103,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -4125,7 +4125,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_kubernetes_events_total{k8s_app=\"cilium\", scope=\"Pod\", pod=~\"$pod\"}[1m])) by (pod, action) * 60",
               "format": "time_series",
@@ -4140,7 +4140,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -4162,7 +4162,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_kubernetes_events_total{k8s_app=\"cilium\", scope=\"Node\", pod=~\"$pod\"}[1m])) by (pod, action) * 60",
               "format": "time_series",
@@ -4177,7 +4177,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -4199,7 +4199,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_kubernetes_events_total{k8s_app=\"cilium\", scope=\"Service\", pod=~\"$pod\"}[1m])) by (pod, action) * 60",
               "format": "time_series",
@@ -4214,7 +4214,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -4236,7 +4236,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_kubernetes_events_total{k8s_app=\"cilium\", scope=\"Endpoint\", pod=~\"$pod\"}[1m])) by (pod, action) * 60",
               "format": "time_series",
@@ -4251,7 +4251,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "PBFA97CFB590B2093"
           },
           "fieldConfig": {
             "defaults": {
@@ -4273,7 +4273,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "PBFA97CFB590B2093"
               },
               "expr": "avg(rate(cilium_kubernetes_events_total{k8s_app=\"cilium\", scope=\"Namespace\", pod=~\"$pod\"}[1m])) by (pod, action) * 60",
               "format": "time_series",
