@@ -32,6 +32,14 @@ resource "helm_release" "cilium_helm_chart" {
     {
       name  = "hubble.ui.service.nodePort"
       value = "30082"
+    },
+    {
+      name  = "prometheus.enabled"
+      value = "true"
+    },
+    {
+      name  = "prometheus.port"
+      value = "9962"
     }
   ]
 }
