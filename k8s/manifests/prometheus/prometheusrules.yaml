@@ -5,6 +5,7 @@ metadata:
   namespace: prometheus
   labels:
     role: alert-rules
+    release: prometheus
 
 spec:
 
