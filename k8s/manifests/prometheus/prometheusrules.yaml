@@ -12,8 +12,8 @@ spec:
     - name: check-memory-usage
       rules:
         - alert: HighMemoryUsage
-          expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 60
-          for: 2m
+          expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 1
+          for: 10s
           labels:
             severity: critical
           annotations: 
