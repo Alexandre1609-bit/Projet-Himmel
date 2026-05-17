@@ -40,10 +40,6 @@ spec:
                   path: /var/lib/grafana/dashboards/default
         dashboards:
           default:
-            kubernetes-views:
-              gnetId: 15757
-              revision: 1
-              datasource: Prometheus
             hubble:
               gnetId: 16611
               revision: 1
