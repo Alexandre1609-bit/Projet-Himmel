@@ -28,16 +28,7 @@ spec:
                 isDefault: true
         service:
           type: NodePort
-          nodePort: 30081
-        dashboardProviders:
-          dashboardproviders.yaml:
-            apiVersion: 1
-            providers:
-              - name: default
-                folder: ''
-                type: file
-                options:
-                  path: /var/lib/grafana/dashboards/default
+          nodePort: 30081      
   destination:
     server: https://kubernetes.default.svc
     namespace: grafana
