@@ -211,8 +211,7 @@ data:
                 "legendFormat": "{{level}}",
                 "refId": "A"
               }
-            }
-          ],
+            ],
             "title": "Errors & Warnings",
             "type": "timeseries"
           },
