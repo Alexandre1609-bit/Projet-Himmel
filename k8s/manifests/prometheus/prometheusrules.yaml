@@ -1,0 +1,31 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: prometheus-rules
+  namespace: prometheus
+  labels:
+    role: alert-rules
+
+spec:
+
+  groups:
+    - name: check-memory-usage
+      rules:
+        - alert: HighMemoryUsage
+          expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 60
+          for: 2m
+          labels:
+            severity: critical
+          annotations: 
+            summary: "Memory usage  > 60% detected"
+    
+    - name: check-cpu-usage
+      rules:
+        - alert: HighCpuUsage
+          expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 1
+          for: 10s
+          labels:
+            severity: critical
+          annotations:
+            summary: "Cpu usage > 60% detected" 
+
