@@ -11,7 +11,7 @@ spec:
       - kube-system
   selector:
     matchLabels:
-      app.kubernetes.io/name: cilium
+      k8s-app: cilium
   podMetricsEndpoints:
     - port: prometheus
       path: /metrics
