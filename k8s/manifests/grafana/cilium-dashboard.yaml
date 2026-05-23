@@ -4306,7 +4306,10 @@ data:
               "text": "All",
               "value": "$__all"
             },
-            "datasource": "Prometheus",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+            },
             "definition": "label_values(cilium_version, pod)",
             "includeAll": true,
             "name": "pod",
