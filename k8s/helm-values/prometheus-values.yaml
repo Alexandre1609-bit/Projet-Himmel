@@ -1,22 +1,20 @@
-helm:
-  values: |
-    alertmanager:
-      config:
-        global:
-          resolve_timeout: 5m
+alertmanager:
+  config:
+    global:
+      resolve_timeout: 5m
 
-        route:
-          receiver: email-notification
+    route:
+      receiver: email-notification
 
-        receivers:
-          - name: "null"
+    receivers:
+      - name: "null"
 
-          - name: "email-notification"
-            email_configs:
-              - to: alexandre.alertmanager@hotmail.fr
+      - name: "email-notification"
+        email_configs:
+          - to: alexandre.alertmanager@hotmail.fr
 
-          - name: "slack"
-            slack_configs:
-              - api_url: #à ajouter plus tard /!\ bitnami sealed secret !
-                channel: "#alerts"
-                send_resolved: true
+      - name: "slack"
+        slack_configs:
+          - api_url: # à ajouter plus tard /!\ Bitnami Sealed Secrets
+            channel: "#alerts"
+            send_resolved: true

@@ -11,6 +11,9 @@ spec:
     repoURL: "https://prometheus-community.github.io/helm-charts"
     chart: kube-prometheus-stack
     targetRevision: "83.6.0"
+    helm:
+      valueFiles:
+        - prometheus-values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: prometheus
