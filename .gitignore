@@ -27,11 +27,13 @@ id_ed25519*
 known_hosts
 authorized_keys
 secrets.yaml
-.env
+*.env
 
 # --- Kubernetes --- #Pour plus tard !!!!
 config           
 kubeconfig
+*.secret.yaml
+local-secrets/
 
 # --- IDE ---
 .vscode/
