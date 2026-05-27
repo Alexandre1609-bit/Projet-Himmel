@@ -17,6 +17,7 @@ spec:
 
     - repoURL: "https://github.com/Alexandre1609-bit/Projet-Himmel"
       targetRevision: HEAD
+      ref: values
 
   destination:
     server: https://kubernetes.default.svc
