@@ -15,7 +15,7 @@ spec:
         valueFiles:
           - $values/k8s/prometheus-values.yaml
 
-    - repoURL: "https://github.com/Alexandre1609-bit/Projet-Himmel"
+    - repoURL: "https://github.com/Alexandre1609-bit/Projet-Himmel.git"
       targetRevision: HEAD
       ref: values
 
