@@ -13,7 +13,7 @@ spec:
     targetRevision: "83.6.0"
     helm:
       valueFiles:
-        - prometheus-values.yaml
+        - k8s/prometheus-values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: prometheus
