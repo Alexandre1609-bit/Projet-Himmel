@@ -1,4 +1,8 @@
 alertmanager:
+  alertmanagerSpec:
+    secrets:
+      - slack-whook
+
   config:
     global:
       resolve_timeout: 5m
@@ -6,9 +10,9 @@ alertmanager:
     route:
       receiver: email-notification
       routes:
-        - match:
-            severity: critical
-            receiver: slack
+        - matchers:
+            - severity="critical"
+          receiver: slack
 
     receivers:
       - name: "null"
@@ -19,6 +23,6 @@ alertmanager:
 
       - name: "slack"
         slack_configs:
-          - api_url: #
+          - api_url_file: /etc/alertmanager/secrets/slack-whook/api_url
             channel: "#alerts"
             send_resolved: true
