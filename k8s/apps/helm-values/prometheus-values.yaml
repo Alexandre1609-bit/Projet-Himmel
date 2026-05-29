@@ -9,10 +9,19 @@ alertmanager:
 
     route:
       receiver: email-notification
+      group_by: ['alertname']
+      
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 4h
+
       routes:
         - matchers:
             - severity="critical"
+          group_wait: 10s
           receiver: slack
+
+    
 
     receivers:
       - name: "null"
