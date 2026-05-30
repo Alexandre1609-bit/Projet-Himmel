@@ -20,6 +20,7 @@ alertmanager:
             - severity="critical"
           group_wait: 10s
           receiver: slack
+          continue: true
 
     
 
