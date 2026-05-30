@@ -13,7 +13,7 @@ spec:
       targetRevision: "83.6.0"
       helm:
         valueFiles:
-          - $values/k8s/prometheus-values.yaml
+          - $values/k8s/helm-values/prometheus-values.yaml
 
     - repoURL: "https://github.com/Alexandre1609-bit/Projet-Himmel.git"
       targetRevision: HEAD
