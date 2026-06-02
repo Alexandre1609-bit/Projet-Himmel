@@ -10,7 +10,12 @@ spec:
       - apiGroups: ['', "apps"]
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
-        resources: ["deployments"]
+        resources: ["deployments", "pods", "daemonsets", "statefulsets"]
   validations:
-    - message: please do not use ':latest' image
+    - containers:
+       message: please do not use ':latest' image
       expression: "object.spec.template.spec.containers.all(c, !c.image.endsWith(':latest'))"
+
+    - init-containers:
+        message: please do not use ':latest' image
+        expression: "object.initContainers.all(c, !c.image.endsWith(':latest'))"
