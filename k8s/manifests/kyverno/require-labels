@@ -1,0 +1,16 @@
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: require-labels-on-resources 
+spec: 
+  validationActions:
+    - Deny
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["", "apps"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods", "deployments", "daemonsets", "statefulsets", "jobs", "cronjobs"]
+  validations:
+    - message: "Please add at least one label to the resource."
+      expression: "has(object.metadata.labels)"
