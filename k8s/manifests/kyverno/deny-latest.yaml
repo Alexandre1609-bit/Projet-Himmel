@@ -1,21 +1,31 @@
 apiVersion: policies.kyverno.io/v1
 kind: ValidatingPolicy
 metadata:
-  name: deny-latest-image
+  name: deny-latest-image-everywhere
 spec:
   validationActions:
     - Deny
   matchConstraints:
     resourceRules:
-      - apiGroups: ['', "apps"]
+      - apiGroups: ["", "apps", "batch"]
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
-        resources: ["deployments", "pods", "daemonsets", "statefulsets"]
+        resources: ["pods", "deployments", "daemonsets", "statefulsets", "jobs", "cronjobs"]
   validations:
-    - containers:
-       message: please do not use ':latest' image
-      expression: "object.spec.template.spec.containers.all(c, !c.image.endsWith(':latest'))"
+    - message: "please do not use ':latest' image in containers (workload)"
+      expression: "!has(object.spec.template) || object.spec.template.spec.containers.all(c, !c.image.endsWith(':latest'))"
 
-    - init-containers:
-        message: please do not use ':latest' image
-        expression: "object.initContainers.all(c, !c.image.endsWith(':latest'))"
+    - message: "please do not use ':latest' image in initContainers (workload)"
+      expression: "!has(object.spec.template) || !has(object.spec.template.spec.initContainers) || object.spec.template.spec.initContainers.all(c, !c.image.endsWith(':latest'))"
+      
+    - message: "please do not use ':latest' image in containers (pod)"
+      expression: "has(object.spec.template) || has(object.spec.jobTemplate) || object.spec.containers.all(c, !c.image.endsWith(':latest'))"
+
+    - message: "please do not use ':latest' image in initContainers (pod)"
+      expression: "has(object.spec.template) || has(object.spec.jobTemplate) || !has(object.spec.initContainers) || object.spec.initContainers.all(c, !c.image.endsWith(':latest'))"
+
+    - message: "please do not use ':latest' image in containers (cronJob)"
+      expression: "!has(object.spec.jobTemplate) || object.spec.jobTemplate.spec.template.spec.containers.all(c, !c.image.endsWith(':latest'))"
+
+    - message: "please do not use ':latest' image in initContainers (cronJob)"
+      expression: "!has(object.spec.jobTemplate) || !has(object.spec.jobTemplate.spec.template.spec.initContainers) || object.spec.jobTemplate.spec.template.spec.initContainers.all(c, !c.image.endsWith(':latest'))"
