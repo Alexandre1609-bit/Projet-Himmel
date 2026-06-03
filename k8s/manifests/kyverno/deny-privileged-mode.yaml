@@ -1,0 +1,31 @@
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: deny-allow-privileged-mode
+spec:
+  validationActions:
+    - Deny
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["", "apps", "batch"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods", "deployments", "daemonsets", "statefulsets", "jobs", "cronjobs"]
+  validations:
+    - message: "Privileged mode is forbidden in containers (Workload). Please set privileged to false."
+      expression: "!has(object.spec.template) || object.spec.template.spec.containers.all(c, has(c.securityContext) && has(c.securityContext.privileged) && c.securityContext.privileged == false)"
+
+    - message: "Privileged mode is forbidden in initContainers (Workload). Please set privileged to false."
+      expression: "!has(object.spec.template) || !has(object.spec.template.spec.initContainers) || object.spec.template.spec.initContainers.all(c, has(c.securityContext) && has(c.securityContext.privileged) && c.securityContext.privileged== false)"
+      
+    - message: "Privileged mode is forbidden in containers (Pod). Please set privileged to false."
+      expression: "has(object.spec.template) || has(object.spec.jobTemplate) || object.spec.containers.all(c, has(c.securityContext) && has(c.securityContext.privileged) && c.securityContext.privileged == false)"
+
+    - message: "Privileged mode is forbidden in initContainers (Pod). Please set privileged to false."
+      expression: "has(object.spec.template) || has(object.spec.jobTemplate) || !has(object.spec.initContainers) || object.spec.initContainers.all(c, has(c.securityContext) && has(c.securityContext.privileged) && c.securityContext.privileged == false)"
+
+    - message: "Privileged mode is forbidden in containers (CronJob). Please set privileged to false."
+      expression: "!has(object.spec.jobTemplate) || object.spec.jobTemplate.spec.template.spec.containers.all(c, has(c.securityContext) && has(c.securityContext.privileged) && c.securityContext.privileged == false)"
+
+    - message: "Privileged mode is forbidden in initContainers (CronJob). Please set privileged to false."
+      expression: "!has(object.spec.jobTemplate) || !has(object.spec.jobTemplate.spec.template.spec.initContainers) || object.spec.jobTemplate.spec.template.spec.initContainers.all(c, has(c.securityContext) && has(c.securityContext.privileged) && c.securityContext.privileged == false)"

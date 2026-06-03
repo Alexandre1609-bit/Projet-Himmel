@@ -1,0 +1,31 @@
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: deny-allow-privilege-escalation
+spec:
+  validationActions:
+    - Deny
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["", "apps", "batch"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods", "deployments", "daemonsets", "statefulsets", "jobs", "cronjobs"]
+  validations:
+    - message: "Privilege escalation is forbidden in containers (Workload). Please set allowPrivilegeEscalation to false."
+      expression: "!has(object.spec.template) || object.spec.template.spec.containers.all(c, has(c.securityContext) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false)"
+
+    - message: "Privilege escalation is forbidden in initContainers (Workload). Please set allowPrivilegeEscalation to false."
+      expression: "!has(object.spec.template) || !has(object.spec.template.spec.initContainers) || object.spec.template.spec.initContainers.all(c, has(c.securityContext) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false)"
+      
+    - message: "Privilege escalation is forbidden in containers (Pod). Please set allowPrivilegeEscalation to false."
+      expression: "has(object.spec.template) || has(object.spec.jobTemplate) || object.spec.containers.all(c, has(c.securityContext) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false)"
+
+    - message: "Privilege escalation is forbidden in initContainers (Pod). Please set allowPrivilegeEscalation to false."
+      expression: "has(object.spec.template) || has(object.spec.jobTemplate) || !has(object.spec.initContainers) || object.spec.initContainers.all(c, has(c.securityContext) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false)"
+
+    - message: "Privilege escalation is forbidden in containers (CronJob). Please set allowPrivilegeEscalation to false."
+      expression: "!has(object.spec.jobTemplate) || object.spec.jobTemplate.spec.template.spec.containers.all(c, has(c.securityContext) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false)"
+
+    - message: "Privilege escalation is forbidden in initContainers (CronJob). Please set allowPrivilegeEscalation to false."
+      expression: "!has(object.spec.jobTemplate) || !has(object.spec.jobTemplate.spec.template.spec.initContainers) || object.spec.jobTemplate.spec.template.spec.initContainers.all(c, has(c.securityContext) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false)"
