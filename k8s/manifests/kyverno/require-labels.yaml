@@ -7,10 +7,10 @@ spec:
     - Deny
   matchConstraints:
     resourceRules:
-      - apiGroups: ["", "apps"]
+      - apiGroups: ["", "apps", "batch"]
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["pods", "deployments", "daemonsets", "statefulsets", "jobs", "cronjobs"]
   validations:
-    - message: "Please add at least one label to the resource."
-      expression: "has(object.metadata.labels)"
+    - message: "Please add at least one of the following labels to the resource: 'env', 'prod', or 'team'."
+      expression: "has(object.metadata.labels) && ['env', 'prod', 'team'].exists(k, k in object.metadata.labels)"
