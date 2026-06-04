@@ -1,0 +1,14 @@
+apiVersion: policies.kyverno.io/v1alpha1
+kind: PolicyException
+metadata:
+  name: exception-falco-privileged
+  namespace: falco
+spec:
+  policyRefs:
+    - name: deny-privileged-mode
+      kind: ValidatingPolicy
+    - name: deny-privilege-escalation
+      kind: ValidatingPolicy
+  matchConditions:
+    - name: is-falco-service-account
+      expression: "has(object.spec.serviceAccountName) && object.spec.serviceAccountName == 'faclo'"
