@@ -1,7 +1,7 @@
 apiVersion: policies.kyverno.io/v1
 kind: ValidatingPolicy
 metadata:
-  name: deny-latest-image-everywhere
+  name: deny-latest-image
 spec:
   validationActions:
     - Deny

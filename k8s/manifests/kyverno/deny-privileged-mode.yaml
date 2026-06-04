@@ -1,7 +1,7 @@
 apiVersion: policies.kyverno.io/v1
 kind: ValidatingPolicy
 metadata:
-  name: deny-allow-privileged-mode
+  name: deny-privileged-mode
 spec:
   validationActions:
     - Deny
