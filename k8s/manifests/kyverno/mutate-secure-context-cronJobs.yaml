@@ -1,0 +1,78 @@
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
+metadata:
+  name: mutate-secure-context-cronjobs-containers
+spec:
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["batch"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["cronjobs"]
+  mutations:
+    - patchType: ApplyConfiguration
+      applyConfiguration:
+        expression: >
+          Object{
+            spec: Object.spec{
+              jobTemplate: Object.spec.jobTemplate{
+                spec: Object.spec.jobTemplate.spec{
+                  template: Object.spec.jobTemplate.spec.template{
+                    spec: Object.spec.jobTemplate.spec.template.spec{
+                      containers: object.spec.jobTemplate.spec.template.spec.containers.map(c, 
+                        Object.spec.jobTemplate.spec.template.spec.containers{
+                          name: c.name, 
+                          securityContext: Object.spec.jobTemplate.spec.template.spec.containers.securityContext{
+                            privileged: false,
+                            allowPrivilegeEscalation: false
+                          }
+                        }
+                      )
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+---
+
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
+metadata:
+  name: mutate-secure-context-cronjobs-initContainers
+spec:
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["batch"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["cronjobs"]
+  matchConditions:
+    - name: check-if-init-containers-exist
+      expression: "has(object.spec.jobTemplate.spec.template.spec.initContainers)"
+  mutations:
+    - patchType: ApplyConfiguration
+      applyConfiguration:
+        expression: >
+          Object{
+            spec: Object.spec{
+              jobTemplate: Object.spec.jobTemplate{
+                spec: Object.spec.jobTemplate.spec{
+                  template: Object.spec.jobTemplate.spec.template{
+                    spec: Object.spec.jobTemplate.spec.template.spec{
+                      initContainers: object.spec.jobTemplate.spec.template.spec.initContainers.map(c, 
+                        Object.spec.jobTemplate.spec.template.spec.initContainers{
+                          name: c.name, 
+                          securityContext: Object.spec.jobTemplate.spec.template.spec.initContainers.securityContext{
+                            privileged: false,
+                            allowPrivilegeEscalation: false
+                          }
+                        }
+                      )
+                    }
+                  }
+                }
+              }
+            }
+          }

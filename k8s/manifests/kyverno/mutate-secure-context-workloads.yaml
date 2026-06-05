@@ -1,0 +1,72 @@
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
+metadata:
+  name: mutate-secure-context-workloads-containers
+spec:
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["apps", "batch"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["deployments", "daemonsets", "statefulsets", "jobs"]
+  mutations:
+    - patchType: ApplyConfiguration
+      applyConfiguration:
+        expression: >
+          Object{
+            spec: Object.spec{
+              template: Object.spec.template{
+                spec: Object.spec.template.spec{
+                  containers: object.spec.template.spec.containers.map(c, 
+                    Object.spec.template.spec.containers{
+                      name: c.name, 
+                      securityContext: Object.spec.template.spec.containers.securityContext{
+                        privileged: false,
+                        allowPrivilegeEscalation: false
+                      }
+                    }
+                  )
+                }
+              }
+            }
+          }
+
+
+
+---
+
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
+metadata:
+  name: mutate-secure-context-workloads-initContainers
+spec:
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["apps", "batch"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["deployments", "daemonsets", "statefulsets", "jobs"]
+  matchConditions:
+    - name: check-if-init-containers-exist
+      expression: "has(object.spec.template.spec.initContainers)"
+  mutations:
+    - patchType: ApplyConfiguration
+      applyConfiguration:
+        expression: >
+          Object{
+            spec: Object.spec{
+              template: Object.spec.template{
+                spec: Object.spec.template.spec{
+                  initContainers: object.spec.template.spec.initContainers.map(c, 
+                    Object.spec.template.spec.initContainers{
+                      name: c.name, 
+                      securityContext: Object.spec.template.spec.initContainers.securityContext{
+                        privileged: false,
+                        allowPrivilegeEscalation: false
+                      }
+                    }
+                  )
+                }
+              }
+            }
+          }

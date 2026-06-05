@@ -1,0 +1,62 @@
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
+metadata:
+  name: mutate-secure-context-pods-containers
+spec:
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ['']
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
+  mutations:
+    - patchType: ApplyConfiguration
+      applyConfiguration:
+        expression: >
+          Object{
+            spec: Object.spec{
+              containers: object.spec.containers.map(c, 
+                Object.spec.containers{
+                  name: c.name, 
+                  securityContext: Object.spec.containers.securityContext{
+                      privileged: false,
+                      allowPrivilegeEscalation: false
+                      }
+                    }
+                  )
+                }
+              }
+
+---
+
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
+metadata:
+  name: mutate-secure-context-pods-initContainers
+spec:
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ['']
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
+  matchConditions:
+    - name: check-if-init-containers-exist
+      expression: "has(object.spec.initContainers)"
+  mutations:
+    - patchType: ApplyConfiguration
+      applyConfiguration:
+        expression: >
+          Object{
+            spec: Object.spec{
+              initContainers: object.spec.initContainers.map(c, 
+                Object.spec.initContainers{
+                  name: c.name, 
+                  securityContext: Object.spec.initContainers.securityContext{
+                      privileged: false,
+                      allowPrivilegeEscalation: false
+                      }
+                    }
+                  )
+                }
+              }
