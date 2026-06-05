@@ -9,6 +9,21 @@ spec:
       kind: ValidatingPolicy
     - name: deny-privilege-escalation
       kind: ValidatingPolicy
+
+    - name: mutate-secure-context-cronjobs-containers
+      kind: MutatingPolicy
+    - name: mutate-secure-context-cronjobs-initContainers
+      kind: MutatingPolicy
+    - name: mutate-secure-context-pods-containers
+      kind: MutatingPolicy
+    - name: mutate-secure-context-pods-initContainers
+      kind: MutatingPolicy
+    - name: mutate-secure-context-workloads-containers
+      kind: MutatingPolicy
+    - name: mutate-secure-context-workloads-initContainers
+      kind: MutatingPolicy
   matchConditions:
     - name: is-falco-service-account
-      expression: "has(object.spec.serviceAccountName) && object.spec.serviceAccountName == 'faclo'"
+      expression: >
+        (has(object.spec.serviceAccountName) && object.spec.serviceAccountName == 'falco') || 
+        (has(object.spec.template.spec.serviceAccountName) && object.spec.template.spec.serviceAccountName == 'falco')
