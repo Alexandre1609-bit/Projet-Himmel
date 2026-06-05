@@ -7,11 +7,21 @@ spec:
     - Deny
   matchConstraints:
     resourceRules:
-      - apiGroups: ["", "apps", "batch"]
+      - apiGroups: [""]
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
-        resources: ["pods", "deployments", "daemonsets", "statefulsets", "jobs", "cronjobs"]
+        resources: ["pods"]
         
+      - apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["deployments", "daemonsets", "statefulsets"]
+        
+      - apiGroups: ["batch"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["jobs", "cronjobs"]
+
   matchConditions:
     - name: exclude-system-namespaces
       expression: >
