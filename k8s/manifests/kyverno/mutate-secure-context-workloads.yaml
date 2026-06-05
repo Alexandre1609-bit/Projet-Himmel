@@ -5,10 +5,14 @@ metadata:
 spec:
   matchConstraints:
     resourceRules:
-      - apiGroups: ["apps", "batch"]
+      - apiGroups: ["batch"]
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
-        resources: ["deployments", "daemonsets", "statefulsets", "jobs"]
+        resources: ["deployments", "daemonsets", "statefulsets"]
+      - apiGroups: ["batch"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["jobs"]
   mutations:
     - patchType: ApplyConfiguration
       applyConfiguration:
@@ -42,10 +46,14 @@ metadata:
 spec:
   matchConstraints:
     resourceRules:
-      - apiGroups: ["apps", "batch"]
+      - apiGroups: ["batch"]
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
-        resources: ["deployments", "daemonsets", "statefulsets", "jobs"]
+        resources: ["deployments", "daemonsets", "statefulsets"]
+      - apiGroups: ["batch"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["jobs"]
   matchConditions:
     - name: check-if-init-containers-exist
       expression: "has(object.spec.template.spec.initContainers)"
