@@ -11,6 +11,18 @@ spec:
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["pods", "deployments", "daemonsets", "statefulsets", "jobs", "cronjobs"]
+    excludeResources:
+      namespaces:
+        - argocd
+        - cilium-secrets
+        - falco
+        - grafana
+        - kube-node-lease
+        - kube-public
+        - kube-system
+        - kyverno
+        - monitoring
+        - prometheus
   validations:
     - message: "Please add at least one of the following labels to the resource: 'env', 'prod', or 'team'."
       expression: "has(object.metadata.labels) && ['env', 'prod', 'team'].exists(k, k in object.metadata.labels)"
