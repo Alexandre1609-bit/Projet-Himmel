@@ -2,6 +2,8 @@ apiVersion: policies.kyverno.io/v1
 kind: MutatingPolicy
 metadata:
   name: mutate-secure-context-cronjobs-containers
+  annotations:
+    pod-policies.kyverno.io/autogen-controllers: "none"
 spec:
   matchConstraints:
     resourceRules:
@@ -41,6 +43,8 @@ apiVersion: policies.kyverno.io/v1
 kind: MutatingPolicy
 metadata:
   name: mutate-secure-context-cronjobs-initContainers
+  annotations:
+    pod-policies.kyverno.io/autogen-controllers: "none"
 spec:
   matchConstraints:
     resourceRules:

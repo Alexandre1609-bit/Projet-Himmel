@@ -2,6 +2,8 @@ apiVersion: policies.kyverno.io/v1
 kind: MutatingPolicy
 metadata:
   name: mutate-secure-context-workloads-containers
+  annotations:
+    pod-policies.kyverno.io/autogen-controllers: "none"
 spec:
   matchConstraints:
     resourceRules:
@@ -43,6 +45,8 @@ apiVersion: policies.kyverno.io/v1
 kind: MutatingPolicy
 metadata:
   name: mutate-secure-context-workloads-initContainers
+  annotations:
+    pod-policies.kyverno.io/autogen-controllers: "none"
 spec:
   matchConstraints:
     resourceRules:
