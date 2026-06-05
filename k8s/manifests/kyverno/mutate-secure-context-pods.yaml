@@ -34,7 +34,7 @@ spec:
 apiVersion: policies.kyverno.io/v1
 kind: MutatingPolicy
 metadata:
-  name: mutate-secure-context-pods-initContainers
+  name: mutate-secure-context-pods-init-containers
   annotations:
     pod-policies.kyverno.io/autogen-controllers: "none"
 spec:
