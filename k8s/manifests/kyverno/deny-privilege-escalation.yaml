@@ -6,11 +6,21 @@ spec:
   validationActions:
     - Deny
   matchConstraints:
-    resourceRules:
-      - apiGroups: ["", "apps", "batch"]
+     resourceRules:
+      - apiGroups: [""]
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
-        resources: ["pods", "deployments", "daemonsets", "statefulsets", "jobs", "cronjobs"]
+        resources: ["pods"]
+        
+      - apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["deployments", "daemonsets", "statefulsets"]
+        
+      - apiGroups: ["batch"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["jobs", "cronjobs"]
   validations:
     - message: "Privilege escalation is forbidden in containers (Workload). Please set allowPrivilegeEscalation to false."
       expression: "!has(object.spec.template) || object.spec.template.spec.containers.all(c, has(c.securityContext) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false)"

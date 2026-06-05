@@ -7,10 +7,20 @@ spec:
     - Deny
   matchConstraints:
     resourceRules:
-      - apiGroups: ["", "apps", "batch"]
+      - apiGroups: [""]
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
-        resources: ["pods", "deployments", "daemonsets", "statefulsets", "jobs", "cronjobs"]
+        resources: ["pods"]
+        
+      - apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["deployments", "daemonsets", "statefulsets"]
+        
+      - apiGroups: ["batch"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["jobs", "cronjobs"]
   validations:
     - message: "please do not use ':latest' image in containers (workload)"
       expression: "!has(object.spec.template) || object.spec.template.spec.containers.all(c, !c.image.endsWith(':latest'))"
