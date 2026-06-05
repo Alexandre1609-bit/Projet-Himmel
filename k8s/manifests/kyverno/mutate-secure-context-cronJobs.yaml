@@ -11,17 +11,14 @@ spec:
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["cronjobs"]
-    excludeResources:
-      namespaces:
-        - argocd
-        - cilium-secrets
-        - falco
-        - grafana
-        - kube-node-lease
-        - kube-public
-        - kube-system
-        - kyverno
-        - monitoring
+  matchConditions:
+     - name: exclude-system-namespaces
+       expression: >
+        !(object.metadata.namespace in [
+          'argocd', 'cilium-secrets', 'falco', 'grafana',
+          'kube-node-lease', 'kube-public', 'kube-system',
+          'kyverno', 'monitoring', 'prometheus'
+        ])
         - prometheus
   mutations:
     - patchType: ApplyConfiguration
@@ -64,21 +61,18 @@ spec:
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["cronjobs"]
-    excludeResources:
-      namespaces:
-        - argocd
-        - cilium-secrets
-        - falco
-        - grafana
-        - kube-node-lease
-        - kube-public
-        - kube-system
-        - kyverno
-        - monitoring
-        - prometheus    
+
   matchConditions:
     - name: check-if-init-containers-exist
       expression: "has(object.spec.jobTemplate.spec.template.spec.initContainers)"
+    
+    - name: exclude-system-namespaces
+      expression: >
+        !(object.metadata.namespace in [
+          'argocd', 'cilium-secrets', 'falco', 'grafana',
+          'kube-node-lease', 'kube-public', 'kube-system',
+          'kyverno', 'monitoring', 'prometheus'
+        ])
   mutations:
     - patchType: ApplyConfiguration
       applyConfiguration:

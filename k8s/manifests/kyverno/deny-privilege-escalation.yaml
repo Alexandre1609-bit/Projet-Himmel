@@ -21,19 +21,16 @@ spec:
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["jobs", "cronjobs"]
-     excludeResources:
-      namespaces:
-        - argocd
-        - cilium-secrets
-        - falco
-        - grafana
-        - kube-node-lease
-        - kube-public
-        - kube-system
-        - kyverno
-        - monitoring
-        - prometheus
         
+  matchConditions:
+    - name: exclude-system-namespaces
+      expression: >
+        !(object.metadata.namespace in [
+          'argocd', 'cilium-secrets', 'falco', 'grafana',
+          'kube-node-lease', 'kube-public', 'kube-system',
+          'kyverno', 'monitoring', 'prometheus'
+        ])
+
   validations:
     - message: "Privilege escalation is forbidden in containers (Workload). Please set allowPrivilegeEscalation to false."
       expression: "!has(object.spec.template) || object.spec.template.spec.containers.all(c, has(c.securityContext) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false)"
