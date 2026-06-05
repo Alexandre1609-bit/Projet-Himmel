@@ -1,0 +1,29 @@
+apiVersion: policies.kyverno.io/v1alpha1
+kind: PolicyException
+metadata:
+  name: exception-node-exporter-privileged
+  namespace: prometheus
+spec:
+  policyRefs:
+    - name: deny-privileged-mode
+      kind: ValidatingPolicy
+    - name: deny-privilege-escalation
+      kind: ValidatingPolicy
+
+    - name: mutate-secure-context-cronjobs-containers
+      kind: MutatingPolicy
+    - name: mutate-secure-context-cronjobs-initContainers
+      kind: MutatingPolicy
+    - name: mutate-secure-context-pods-containers
+      kind: MutatingPolicy
+    - name: mutate-secure-context-pods-initContainers
+      kind: MutatingPolicy
+    - name: mutate-secure-context-workloads-containers
+      kind: MutatingPolicy
+    - name: mutate-secure-context-workloads-initContainers
+      kind: MutatingPolicy
+  matchConditions:
+    - name: is-node-exporter-service-account
+      expression: >
+        (has(object.spec.serviceAccountName) && object.spec.serviceAccountName == 'prometheus-prometheus-node-exporter') || 
+        (has(object.spec.template.spec.serviceAccountName) && object.spec.template.spec.serviceAccountName == 'prometheus-prometheus-node-exporter')
