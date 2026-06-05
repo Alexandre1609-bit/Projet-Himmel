@@ -2,7 +2,7 @@ apiVersion: policies.kyverno.io/v1
 kind: PolicyException
 metadata:
   name: exception-cilium-privileged
-  namespace: cilium-system
+  namespace: kube-system
 spec:
   policyRefs:
     - name: deny-privileged-mode
