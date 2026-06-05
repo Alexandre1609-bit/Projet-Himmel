@@ -9,6 +9,8 @@ spec:
       kind: ValidatingPolicy
     - name: deny-privilege-escalation
       kind: ValidatingPolicy
+    - name: require-labels-on-resources
+      kind: ValidatingPolicy
 
     - name: mutate-secure-context-cronjobs-containers
       kind: MutatingPolicy
