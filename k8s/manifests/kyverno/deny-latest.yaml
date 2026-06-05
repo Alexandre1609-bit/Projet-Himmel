@@ -21,6 +21,19 @@ spec:
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["jobs", "cronjobs"]
+    excludeResources:
+      namespaces:
+        - argocd
+        - cilium-secrets
+        - falco
+        - grafana
+        - kube-node-lease
+        - kube-public
+        - kube-system
+        - kyverno
+        - monitoring
+        - prometheus
+
   validations:
     - message: "please do not use ':latest' image in containers (workload)"
       expression: "!has(object.spec.template) || object.spec.template.spec.containers.all(c, !c.image.endsWith(':latest'))"

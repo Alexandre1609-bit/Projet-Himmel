@@ -15,6 +15,18 @@ spec:
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["jobs"]
+    excludeResources:
+      namespaces:
+        - argocd
+        - cilium-secrets
+        - falco
+        - grafana
+        - kube-node-lease
+        - kube-public
+        - kube-system
+        - kyverno
+        - monitoring
+        - prometheus
   mutations:
     - patchType: ApplyConfiguration
       applyConfiguration:
@@ -58,6 +70,18 @@ spec:
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["jobs"]
+    excludeResources:
+      namespaces:
+        - argocd
+        - cilium-secrets
+        - falco
+        - grafana
+        - kube-node-lease
+        - kube-public
+        - kube-system
+        - kyverno
+        - monitoring
+        - prometheus
   matchConditions:
     - name: check-if-init-containers-exist
       expression: "has(object.spec.template.spec.initContainers)"
