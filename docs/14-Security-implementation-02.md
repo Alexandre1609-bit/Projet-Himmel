@@ -2,7 +2,7 @@
 
 Lors du précédent devlog, j'abordais le déploiement de mes premières règles (_policies_) Kyverno, marquant le début officiel de la sécurisation de mon cluster. Ce que j'ignorais alors, c'est qu'à l'instant même où j'effectuerais mon premier `git push`, j'allais déclencher une série d'incidents en chaîne exigeant un débogage intense : applications désynchronisées, paralysie totale du CNI (Cilium), dysfonctionnement critique d'ArgoCD, et arrêt complet du flux GitOps...
 
-Ce devlog revient en détail sur les causes profondes de ces incidents, ls approches employées pour les détecter et les stratégies adoptées pour restaurer la stabilité du cluster.
+Ce devlog revient en détail sur les causes profondes de ces incidents, les approches employées pour les détecter et les stratégies adoptées pour restaurer la stabilité du cluster.
 
 ## 1. Problèmes rencontrés et solutions apportées
 
@@ -34,7 +34,7 @@ Warning  PolicyViolation  15m  kyverno-scan  Pod prometheus/prometheus-kube-prom
 Warning  PolicyViolation  15m  kyverno-scan  Pod kube-system/coredns-7c65d6cfc9-lj9hn: fail; Privileged mode is forbidden in containers (Pod). Please set privileged to false.
 ```
 
-Ces alertes ne représentaient qu'une fraction du problème, mais elles ont soulevé une question fondamentale : _« Ayant conçu des règles de sécurité tout en prévoyant des exceptions précises via des `PolicyException` pour Cilium et Falco, pourquoi l'intégralité du cluster est-elle bloquée ? »_
+Ces alertes ne représentaient qu'une fraction du problème, mais elles ont soulevé une question fondamentale : _« Ayant conçu des règles de sécurité tout en prévoyant des exceptions précises via des `PolicyException` pour Cilium et Falco, pourquoi l'intégralité du cluster est-il bloquée ? »_
 
 Après plusieurs heures de recherche, j'ai identifié le mécanisme de verrouillage. La quasi-totalité de mes pods d'infrastructure ne contenaient pas explicitement les champs `privileged: false` ou `allowPrivilegeEscalation: false` dans leurs manifestes d'origine. De plus, j'avais déployé une règle `require-labels` imposant la présence de métadonnées spécifiques, générant des erreurs systématiques du type `Policy require-labels-on-resources failed`.
 
@@ -112,7 +112,7 @@ L'accès a été restauré en injectant manuellement un nouveau secret structur�
 
 **La leçon apprise :** On ne supprime jamais une brique d'authentification d'infrastructure à chaud sans avoir minutieusement validé la procédure de remplacement ou configuré au préalable une méthode d'accès alternative.
 
-## 2. Concepts assimilés
+## 2. Concepts appris
 
 **Produit cartésien dans Kubernetes :** J'ai compris que Kubernetes (et particulièrement Kyverno) utilise le principe mathématique du produit cartésien lorsqu'on lui fournit plusieurs listes d'attributs. En déclarant plusieurs groupes d'API et types de ressources dans un même bloc `ValidatingPolicy`, le moteur génère l'ensemble de toutes les combinaisons possibles, ce qui tentait de créer des correspondances invalides et générait des erreurs de permissions.
 
