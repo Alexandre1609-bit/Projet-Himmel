@@ -23,7 +23,7 @@ jobs:
       - name: check lint with yamllint
         run: yamllint .
 
-      - name: Trivy manifests scan
+      - name: Trivy manifests scan and IaC mode
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: 'fs'
@@ -31,6 +31,16 @@ jobs:
           scanners: 'misconfig,secret'
           format: table
           ignore-unfixed: true
+      
+      - name: Trivy manifests scan for CVes
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          scanners: 'vuln'
+          format: table
+          ignore-unfixed: true
+          skip-setup-trivy: true
 
       - name: gitleaks
         uses: gitleaks/gitleaks-action@v3
