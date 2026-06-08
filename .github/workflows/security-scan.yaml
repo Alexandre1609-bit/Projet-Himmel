@@ -28,6 +28,7 @@ jobs:
         with:
           scan-type: 'fs'
           scan-ref: '.'
+          scanners: 'misconfig,secret'
           format: table
           ignore-unfixed: true
 
