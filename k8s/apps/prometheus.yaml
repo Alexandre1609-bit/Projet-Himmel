@@ -7,6 +7,25 @@ metadata:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   project: default
+  
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: prometheus-grafana
+      namespace: prometheus
+      jsonPointers:
+        - /data/admin-password
+        - /data/admin-user
+        - /data/ldap-toml
+    - group: "apps"
+      kind: Deployment
+      name: prometheus-grafana
+      namespace: prometheus
+      jsonPointers:
+        - /spec/template/metadata/annotations/checksum~1secret
+        - /spec/template/metadata/annotations/checksum~1config
+        - /spec/template/metadata/annotations/checksum~1sc-dashboard-provider-config
+
   sources:
     - repoURL: "https://prometheus-community.github.io/helm-charts"
       chart: kube-prometheus-stack
