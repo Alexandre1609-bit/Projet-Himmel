@@ -1,3 +1,4 @@
+---
 apiVersion: policies.kyverno.io/v1
 kind: PolicyException
 metadata:
@@ -11,7 +12,7 @@ spec:
       kind: ValidatingPolicy
     - name: require-labels-on-resources
       kind: ValidatingPolicy
-    
+
     - name: mutate-secure-context-cronjobs-containers
       kind: MutatingPolicy
     - name: mutate-secure-context-cronjobs-initContainers
@@ -27,5 +28,5 @@ spec:
   matchConditions:
     - name: is-cilium-service-account
       expression: >
-        (has(object.spec.serviceAccountName) && object.spec.serviceAccountName in ['cilium', 'cilium-envoy', 'cilium-operator']) || 
+        (has(object.spec.serviceAccountName) && object.spec.serviceAccountName in ['cilium', 'cilium-envoy', 'cilium-operator']) ||
         (has(object.spec.template.spec.serviceAccountName) && object.spec.template.spec.serviceAccountName in ['cilium', 'cilium-envoy', 'cilium-operator'])

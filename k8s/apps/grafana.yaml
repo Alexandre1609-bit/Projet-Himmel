@@ -1,3 +1,4 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -24,11 +25,11 @@ spec:
             datasources:
               - name: Prometheus
                 type: prometheus
-                url: http://prometheus-kube-prometheus-prometheus.prometheus.svc.cluster.local:9090
+                url: http://prometheus-kube-prometheus-prometheus.prometheus.svc.cluster.local:9090 # yamllint disable-line rule:colons rule:line-lenght
                 isDefault: true
         service:
           type: NodePort
-          nodePort: 30081      
+          nodePort: 30081
   destination:
     server: https://kubernetes.default.svc
     namespace: grafana

@@ -1,3 +1,4 @@
+---
 apiVersion: policies.kyverno.io/v1
 kind: PolicyException
 metadata:
@@ -27,5 +28,5 @@ spec:
   matchConditions:
     - name: is-falco-service-account
       expression: >
-        (has(object.spec.serviceAccountName) && object.spec.serviceAccountName == 'falco') || 
+        (has(object.spec.serviceAccountName) && object.spec.serviceAccountName == 'falco') ||
         (has(object.spec.template.spec.serviceAccountName) && object.spec.template.spec.serviceAccountName == 'falco')

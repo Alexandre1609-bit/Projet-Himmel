@@ -1,3 +1,4 @@
+---
 apiVersion: policies.kyverno.io/v1
 kind: MutatingPolicy
 metadata:
@@ -11,10 +12,10 @@ spec:
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["cronjobs"]
-        
+
   matchConditions:
-     - name: exclude-system-namespaces
-       expression: >
+    - name: exclude-system-namespaces
+      expression: >
         !(object.metadata.namespace in [
           'argocd', 'cilium-secrets', 'falco', 'grafana',
           'kube-node-lease', 'kube-public', 'kube-system',
@@ -30,9 +31,9 @@ spec:
                 spec: Object.spec.jobTemplate.spec{
                   template: Object.spec.jobTemplate.spec.template{
                     spec: Object.spec.jobTemplate.spec.template.spec{
-                      containers: object.spec.jobTemplate.spec.template.spec.containers.map(c, 
+                      containers: object.spec.jobTemplate.spec.template.spec.containers.map(c,
                         Object.spec.jobTemplate.spec.template.spec.containers{
-                          name: c.name, 
+                          name: c.name,
                           securityContext: Object.spec.jobTemplate.spec.template.spec.containers.securityContext{
                             privileged: false,
                             allowPrivilegeEscalation: false
@@ -65,7 +66,7 @@ spec:
   matchConditions:
     - name: check-if-init-containers-exist
       expression: "has(object.spec.jobTemplate.spec.template.spec.initContainers)"
-    
+
     - name: exclude-system-namespaces
       expression: >
         !(object.metadata.namespace in [
@@ -83,9 +84,9 @@ spec:
                 spec: Object.spec.jobTemplate.spec{
                   template: Object.spec.jobTemplate.spec.template{
                     spec: Object.spec.jobTemplate.spec.template.spec{
-                      initContainers: object.spec.jobTemplate.spec.template.spec.initContainers.map(c, 
+                      initContainers: object.spec.jobTemplate.spec.template.spec.initContainers.map(c,
                         Object.spec.jobTemplate.spec.template.spec.initContainers{
-                          name: c.name, 
+                          name: c.name,
                           securityContext: Object.spec.jobTemplate.spec.template.spec.initContainers.securityContext{
                             privileged: false,
                             allowPrivilegeEscalation: false

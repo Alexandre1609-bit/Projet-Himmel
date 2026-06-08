@@ -1,3 +1,4 @@
+---
 apiVersion: policies.kyverno.io/v1
 kind: MutatingPolicy
 metadata:
@@ -26,9 +27,9 @@ spec:
         expression: >
           Object{
             spec: Object.spec{
-              containers: object.spec.containers.map(c, 
+              containers: object.spec.containers.map(c,
                 Object.spec.containers{
-                  name: c.name, 
+                  name: c.name,
                   securityContext: Object.spec.containers.securityContext{
                       privileged: false,
                       allowPrivilegeEscalation: false
@@ -53,7 +54,7 @@ spec:
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["pods"]
-   
+
   matchConditions:
     - name: check-if-init-containers-exist
       expression: "has(object.spec.initContainers)"
@@ -64,16 +65,16 @@ spec:
           'argocd', 'cilium-secrets', 'falco', 'grafana',
           'kube-node-lease', 'kube-public', 'kube-system',
           'kyverno', 'monitoring', 'prometheus'
-        ])  
+        ])
   mutations:
     - patchType: ApplyConfiguration
       applyConfiguration:
         expression: >
           Object{
             spec: Object.spec{
-              initContainers: object.spec.initContainers.map(c, 
+              initContainers: object.spec.initContainers.map(c,
                 Object.spec.initContainers{
-                  name: c.name, 
+                  name: c.name,
                   securityContext: Object.spec.initContainers.securityContext{
                       privileged: false,
                       allowPrivilegeEscalation: false

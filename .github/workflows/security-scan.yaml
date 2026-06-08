@@ -14,10 +14,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v6
-      
+
       - name: install yamllint
         run: pip install yamllint
 
@@ -31,7 +30,7 @@ jobs:
           scan-ref: '.'
           format: table
           ignore-unfixed: true
-        
+
       - name: gitleaks
         uses: gitleaks/gitleaks-action@v3
         env:
@@ -46,7 +45,7 @@ jobs:
     if: (github.actor != 'dependabot[bot]')
 
     steps:
-      
+
       - name: checkout code
         uses: actions/checkout@v6
 
@@ -55,4 +54,3 @@ jobs:
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
 
-          

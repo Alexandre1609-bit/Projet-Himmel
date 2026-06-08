@@ -1,10 +1,11 @@
+---
 apiVersion: policies.kyverno.io/v1
 kind: ValidatingPolicy
 metadata:
   name: require-labels-on-resources
   annotations:
     pod-policies.kyverno.io/autogen-controllers: "none"
-spec: 
+spec:
   validationActions:
     - Deny
   matchConstraints:
@@ -13,12 +14,12 @@ spec:
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["pods"]
-        
+
       - apiGroups: ["apps"]
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["deployments", "daemonsets", "statefulsets"]
-        
+
       - apiGroups: ["batch"]
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]

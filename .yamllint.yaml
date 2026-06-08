@@ -1,0 +1,19 @@
+---
+yaml-files:
+  - '*.yaml'
+  - '*.yml'
+  - '.yamllint'
+
+extends: default
+
+ignore: |
+  local-secret/
+  .git/
+  .gitignore
+  .github/
+  k8s/apps/secrets/
+
+rules:
+  line-length:
+    max: 350
+    level: warning

@@ -1,3 +1,4 @@
+---
 apiVersion: policies.kyverno.io/v1
 kind: MutatingPolicy
 metadata:
@@ -32,9 +33,9 @@ spec:
             spec: Object.spec{
               template: Object.spec.template{
                 spec: Object.spec.template.spec{
-                  containers: object.spec.template.spec.containers.map(c, 
+                  containers: object.spec.template.spec.containers.map(c,
                     Object.spec.template.spec.containers{
-                      name: c.name, 
+                      name: c.name,
                       securityContext: Object.spec.template.spec.containers.securityContext{
                         privileged: false,
                         allowPrivilegeEscalation: false
@@ -45,8 +46,6 @@ spec:
               }
             }
           }
-
-
 
 ---
 
@@ -67,7 +66,7 @@ spec:
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["jobs"]
-    
+
   matchConditions:
     - name: check-if-init-containers-exist
       expression: "has(object.spec.template.spec.initContainers)"
@@ -87,9 +86,9 @@ spec:
             spec: Object.spec{
               template: Object.spec.template{
                 spec: Object.spec.template.spec{
-                  initContainers: object.spec.template.spec.initContainers.map(c, 
+                  initContainers: object.spec.template.spec.initContainers.map(c,
                     Object.spec.template.spec.initContainers{
-                      name: c.name, 
+                      name: c.name,
                       securityContext: Object.spec.template.spec.initContainers.securityContext{
                         privileged: false,
                         allowPrivilegeEscalation: false
