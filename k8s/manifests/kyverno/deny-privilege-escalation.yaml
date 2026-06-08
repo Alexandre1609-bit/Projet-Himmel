@@ -2,6 +2,8 @@ apiVersion: policies.kyverno.io/v1
 kind: ValidatingPolicy
 metadata:
   name: deny-privilege-escalation
+  annotations:
+    pod-policies.kyverno.io/autogen-controllers: "none"
 spec:
   validationActions:
     - Deny
