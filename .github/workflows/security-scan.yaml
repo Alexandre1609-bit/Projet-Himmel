@@ -1,0 +1,57 @@
+---
+name: Himmel-security-CI
+
+on:
+  push:
+    branches: [ "main" ]
+    tags: [ "v*.*.*" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  security-and-quality:
+    name: Audit & quality check
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Check lint with yamllint
+        uses: karancode/yamllint-github-action@3.0.0
+        with:
+          yamllint_format: parsable
+
+      - name: Trivy manifests scan
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: table
+          ignore-unfixed: true
+        
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  semgrep:
+    name: Semgrep scan
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+
+    if: (github.actor != 'dependabot[bot]')
+
+    steps:
+      
+      - name: checkout code
+        uses: actions/checkout@v6
+
+      - name: Semgrep scan
+        run: semgrep ci
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+
+          
