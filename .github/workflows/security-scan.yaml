@@ -17,11 +17,12 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v6
+      
+      - name: install yamllint
+        run: pip install yamllint
 
-      - name: Check lint with yamllint
-        uses: karancode/yamllint-github-action@2.1.1
-        with:
-          yamllint_format: parsable
+      - name: check lint with yamllint
+        run: yamllint .
 
       - name: Trivy manifests scan
         uses: aquasecurity/trivy-action@v0.36.0
