@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Check lint with yamllint
-        uses: karancode/yamllint-github-action@3.0.0
+        uses: karancode/yamllint-github-action@2.1.1
         with:
           yamllint_format: parsable
 
