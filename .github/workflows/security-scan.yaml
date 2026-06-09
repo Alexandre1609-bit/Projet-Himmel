@@ -23,7 +23,7 @@ jobs:
       - name: check lint with yamllint
         run: yamllint .
 
-      - name: Trivy manifests scan and IaC mode
+      - name: Trivy Security Audit - IaC & Secrets
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: 'fs'
@@ -32,7 +32,7 @@ jobs:
           format: table
           ignore-unfixed: true
       
-      - name: Trivy manifests scan for CVes
+      - name: Trivy Security Audit - Vulnerabilities (CVEs)
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: 'fs'
