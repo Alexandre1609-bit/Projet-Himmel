@@ -128,7 +128,7 @@ homelab-k8s/
 │       ├── hardware/
 │       └── system/
 ├── k8s/                        # GitOps manifests (watched by ArgoCD)
-│   ├── apps/                   # App of Apps — ArgoCD Application definitions
+│   ├── apps/                   # App of Apps: ArgoCD Application definitions
 │   │   ├── helm-values/
 │   │   └── secrets/
 │   └── manifests/              # Per-application Kubernetes manifests
