@@ -37,6 +37,10 @@ spec:
         app: loki
     spec:
       serviceAccountName: loki
+      securityContext:
+        fsGroup: 10001
+        runAsUser: 10001
+        runAsNonRoot: true
       containers:
         - name: loki
           image: grafana/loki:3.0.0
