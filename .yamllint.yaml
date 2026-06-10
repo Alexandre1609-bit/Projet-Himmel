@@ -12,6 +12,7 @@ ignore: |
   .gitignore
   .github/
   k8s/apps/secrets/
+  k8s/manifests/grafana/
 
 rules:
   line-length:
