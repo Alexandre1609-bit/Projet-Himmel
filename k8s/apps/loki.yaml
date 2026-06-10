@@ -9,7 +9,6 @@ metadata:
     group: grafana
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -29,7 +28,6 @@ spec:
     group: grafana
 
 ---
-
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -55,7 +53,8 @@ spec:
         - name: loki
           image: grafana/loki:master
           imagePullPolicy: Always
-          args: ['-config.file=/etc/loki/loki-config.yaml']
+          args:
+            - -config.file=/etc/loki/loki-config.yaml
           resources:
             requests:
               memory: "64Mi"
@@ -64,15 +63,14 @@ spec:
               memory: "128Mi"
               cpu: "500m"
           volumeMounts:
-          - name: loki-config
-            mountPath: /etc/loki/
+            - name: loki-config
+              mountPath: /etc/loki/
       volumes:
         - name: loki-config
           configMap:
             name: loki-config
 
 ---
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -80,7 +78,6 @@ metadata:
   namespace: kube-system
 data:
   loki-config.yaml: |-
-
     auth_enabled: false
 
     server:
@@ -95,13 +92,13 @@ data:
 
     schema_config:
       configs:
-      - from: 0
-        store: boltdb
-        object_store: filesystem
-        schema: v9
-        index:
-          prefix: index_
-          period: 168h
+        - from: 0
+          store: boltdb
+          object_store: filesystem
+          schema: v9
+          index:
+            prefix: index_
+            period: 168h
 
     storage_config:
       boltdb:
