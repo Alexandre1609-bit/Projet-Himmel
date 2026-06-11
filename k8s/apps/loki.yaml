@@ -20,7 +20,7 @@ spec:
         backend:
           replicas: 0
         singleBinary:
-          replicas: 1   
+          replicas: 1
         loki:
           auth_enabled: false
           useTestSchema: true
@@ -31,7 +31,7 @@ spec:
             bucketNames:
               chunks: chunks
               ruler: ruler
-              admin: admin     
+              admin: admin
         persistence:
           enabled: false
   destination:
@@ -41,7 +41,7 @@ spec:
     automated:
       prune: true
       selfHeal: true
-  syncOptions:
-    - CreateNamespace=true
-    - ServerSideApply=true
-    - RespectIgnoreDifferences=true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true
