@@ -7,12 +7,15 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://grafana.github.io/helm-charts
+    repoURL: https://grafana-community.github.io/helm-charts
     chart: loki
-    targetRevision: 7.0.0
+    targetRevision: 17.31.1
     helm:
       values: |
-        auth_enabled: false
+        loki:
+          auth_enabled: false
+        singleBinary:
+          replicas: 1
         persistence:
           enabled: false
   destination:
