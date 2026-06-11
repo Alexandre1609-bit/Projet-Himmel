@@ -20,9 +20,10 @@ spec:
         backend:
           replicas: 0
         singleBinary:
-          replicas: 1
+          replicas: 1   
         loki:
           auth_enabled: false
+          useTestSchema: true
           commonConfig:
             replication_factor: 1
           storage:
@@ -30,7 +31,7 @@ spec:
             bucketNames:
               chunks: chunks
               ruler: ruler
-              admin: admin 
+              admin: admin     
         persistence:
           enabled: false
   destination:
