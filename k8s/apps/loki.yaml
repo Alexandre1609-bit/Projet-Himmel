@@ -21,6 +21,8 @@ spec:
           replicas: 0
         singleBinary:
           replicas: 1
+          persistence:
+            enabled: false
         loki:
           auth_enabled: false
           useTestSchema: true
