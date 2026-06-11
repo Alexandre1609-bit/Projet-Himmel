@@ -15,19 +15,19 @@ spec:
         deploymentMode: SingleBinary
         loki:
           auth_enabled: false
+        singleBinary:
+          replicas: 1
+        storage:
+          type: filesystem
+        persistence:
+          enabled: false
+        loki:
           storage:
             type: filesystem
             bucketNames:
               chunks: chunks
               ruler: ruler
               admin: admin
-            filesystem:
-              chunks_directory: /loki/chunks
-              rules_directory: /loki/rules
-        singleBinary:
-          replicas: 1
-        persistence:
-          enabled: false
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: loki
