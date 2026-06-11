@@ -7,9 +7,14 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/Alexandre1609-bit/Projet-Himmel'
-    targetRevision: HEAD
-    path: k8s/manifests/loki
+    repoURL: https://grafana.github.io/helm-charts
+    chart: loki
+    targetRevision: 7.1.0
+    helm:
+      values: |
+        auth_enabled: false
+        persistence:
+          enabled: false
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: loki
