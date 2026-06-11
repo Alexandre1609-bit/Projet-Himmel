@@ -12,10 +12,13 @@ spec:
     targetRevision: 17.3.1
     helm:
       values: |
+        deploymentMode: SingleBinary
         loki:
           auth_enabled: false
         singleBinary:
           replicas: 1
+        storage:
+          type: filesystem
         persistence:
           enabled: false
   destination:
