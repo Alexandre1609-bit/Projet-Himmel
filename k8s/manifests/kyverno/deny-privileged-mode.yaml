@@ -31,7 +31,7 @@ spec:
         !(request.namespace in [
           'argocd', 'cilium-secrets', 'falco', 'grafana',
           'kube-node-lease', 'kube-public', 'kube-system',
-          'kyverno', 'monitoring', 'prometheus'
+          'kyverno', 'monitoring', 'prometheus', 'loki'
         ])
   validations:
     - message: "Privileged mode is forbidden in containers (Workload). Please set privileged to false."

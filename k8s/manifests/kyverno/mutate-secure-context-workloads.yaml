@@ -23,7 +23,7 @@ spec:
         !(object.metadata.namespace in [
           'argocd', 'cilium-secrets', 'falco', 'grafana',
           'kube-node-lease', 'kube-public', 'kube-system',
-          'kyverno', 'monitoring', 'prometheus'
+          'kyverno', 'monitoring', 'prometheus', 'loki'
         ])
   mutations:
     - patchType: ApplyConfiguration
@@ -76,7 +76,7 @@ spec:
         !(object.metadata.namespace in [
           'argocd', 'cilium-secrets', 'falco', 'grafana',
           'kube-node-lease', 'kube-public', 'kube-system',
-          'kyverno', 'monitoring', 'prometheus'
+          'kyverno', 'monitoring', 'prometheus', 'loki'
         ])
   mutations:
     - patchType: ApplyConfiguration
