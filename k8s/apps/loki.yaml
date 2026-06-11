@@ -12,7 +12,7 @@ spec:
     path: k8s/manifests/loki
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: kube-system
+    namespace: loki
   syncPolicy:
     automated:
       prune: true
