@@ -1,0 +1,8 @@
+# --- Remove infra scan ---
+
+k8s/
+manifests/
+helm/
+charts/
+terraform/
+infra/
