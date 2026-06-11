@@ -27,6 +27,11 @@ spec:
                 type: prometheus
                 url: http://prometheus-kube-prometheus-prometheus.prometheus.svc.cluster.local:9090 # yamllint disable-line rule:colons rule:line-lenght
                 isDefault: true
+              - name: Loki
+                type: loki
+                uid: loki
+                url: http://loki.loki.svc.cluster.local:3100
+                access: proxy
         service:
           type: NodePort
           nodePort: 30081
