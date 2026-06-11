@@ -15,10 +15,17 @@ spec:
         deploymentMode: SingleBinary
         loki:
           auth_enabled: false
+          storage:
+            type: filesystem
+            bucketNames:
+              chunks: chunks
+              ruler: ruler
+              admin: admin
+            filesystem:
+              chunks_directory: /loki/chunks
+              rules_directory: /loki/rules
         singleBinary:
           replicas: 1
-        storage:
-          type: filesystem
         persistence:
           enabled: false
   destination:
