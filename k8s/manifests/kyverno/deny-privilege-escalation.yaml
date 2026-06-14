@@ -39,18 +39,18 @@ spec:
         object.spec.template.spec.containers.all(c, has(c.securityContext) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false) : true
 
     - message: "Privilege escalation is forbidden in initContainers (Workload). Please set allowPrivilegeEscalation to false."
-      expression: > 
+      expression: >
         request.kind.kind in ['Deployment', 'DaemonSet', 'StatefulSet'] ?
         (!has(object.spec.template.spec.initContainers) || object.spec.template.spec.initContainers.all(c, has(c.securityContext) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false)) : true
 
     - message: "Privilege escalation is forbidden in containers (Pod). Please set allowPrivilegeEscalation to false."
-      expression: > 
-        request.kind.kind == 'Pod' ?  
+      expression: >
+        request.kind.kind == 'Pod' ?
         object.spec.containers.all(c, has(c.securityContext) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false) : true
 
     - message: "Privilege escalation is forbidden in initContainers (Pod). Please set allowPrivilegeEscalation to false."
-      expression: > 
-        request.kind.kind == 'Pod' ?  
+      expression: >
+        request.kind.kind == 'Pod' ?
         (!has(object.spec.initContainers) || object.spec.initContainers.all(c, has(c.securityContext) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false)) : true
 
     - message: "Privilege escalation is forbidden in containers (CronJob). Please set allowPrivilegeEscalation to false."
