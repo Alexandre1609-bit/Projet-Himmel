@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: falo-custom-rules
+  namespace: falco
+data:
+  my-rules.yaml: |
+    - rule: shell_in_container
+      desc: check for any shell activity within a container
+      conditions: >
+        (evt.type(execve, execveat)) and
+        container.id != host and
+        (proc.name = bash or
+        proc.name = ksh)
+      output: >
+        shell in a container detected |
+        user=%user.name container_id=%container.id container_name=%container.name
+        shell=%proc.name parent=%proc.pname cmdline=%proc.cmdline
+      priority: ALERT
+    
+    - rule: deny nmap
+      desc: deny nmap scan in a container
+      conditions: >
+        (evt.type(connect)) and 
+        container.id != host and
+        (proc.name = nmap)
+      output: >
+        Network scan detected |
+        user=%user.name container_id=container.id container_name=%container.name
+        shell=%proc.name parent=%proc.pname cmdline=%proc.cmdline
+      priority: WARNING
+
+    - rule: read /etc/shadow
+      desc: check for any consult of /etc/shadow
+      conditions: >
+        (evt.type(open, openat)) and
+        container.id != host and 
+        (fs.path == /etc/shadow)
+      output: >
+        /etc/shadow opened |
+        user=%user.name container.id=%container.id  continer_name=%container.name
+        path:%fs.path  
+
+
+# https://man7.org/linux/man-pages/man2/syscalls.2.html
