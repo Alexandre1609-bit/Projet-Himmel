@@ -3,8 +3,6 @@ apiVersion: policies.kyverno.io/v1
 kind: ValidatingPolicy
 metadata:
   name: require-labels-on-resources
-  annotations:
-    pod-policies.kyverno.io/autogen-controllers: "none"
 spec:
   validationActions:
     - Deny

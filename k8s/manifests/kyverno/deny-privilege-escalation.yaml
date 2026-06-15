@@ -35,12 +35,12 @@ spec:
   validations:
     - message: "Privilege escalation is forbidden in containers (Workload). Please set allowPrivilegeEscalation to false."
       expression: >
-        request.kind.kind in ['Deployment', 'DaemonSet', 'StatefulSet'] ?
+        request.kind.kind in ['Deployment', 'DaemonSet', 'StatefulSet', 'Job'] ?
         object.spec.template.spec.containers.all(c, has(c.securityContext) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false) : true
 
     - message: "Privilege escalation is forbidden in initContainers (Workload). Please set allowPrivilegeEscalation to false."
       expression: >
-        request.kind.kind in ['Deployment', 'DaemonSet', 'StatefulSet'] ?
+        request.kind.kind in ['Deployment', 'DaemonSet', 'StatefulSet', 'Job'] ?
         (!has(object.spec.template.spec.initContainers) || object.spec.template.spec.initContainers.all(c, has(c.securityContext) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false)) : true
 
     - message: "Privilege escalation is forbidden in containers (Pod). Please set allowPrivilegeEscalation to false."

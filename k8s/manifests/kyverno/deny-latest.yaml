@@ -3,8 +3,6 @@ apiVersion: policies.kyverno.io/v1
 kind: ValidatingPolicy
 metadata:
   name: deny-latest-image
-  annotations:
-    pod-policies.kyverno.io/autogen-controllers: "none"
 spec:
   validationActions:
     - Deny
@@ -28,7 +26,8 @@ spec:
   matchConditions:
     - name: exclude-system-namespaces
       expression: >
-        !(object.metadata.namespace in [
+        expression: >
+        !(request.namespace in [
           'argocd', 'cilium-secrets', 'falco', 'grafana',
           'kube-node-lease', 'kube-public', 'kube-system',
           'kyverno', 'monitoring', 'prometheus', 'loki', 'alloy'

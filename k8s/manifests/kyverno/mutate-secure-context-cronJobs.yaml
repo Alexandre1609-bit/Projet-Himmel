@@ -3,8 +3,6 @@ apiVersion: policies.kyverno.io/v1
 kind: MutatingPolicy
 metadata:
   name: mutate-secure-context-cronjobs-containers
-  annotations:
-    pod-policies.kyverno.io/autogen-controllers: "none"
 spec:
   matchConstraints:
     resourceRules:
@@ -53,8 +51,6 @@ apiVersion: policies.kyverno.io/v1
 kind: MutatingPolicy
 metadata:
   name: mutate-secure-context-cronjobs-init-containers
-  annotations:
-    pod-policies.kyverno.io/autogen-controllers: "none"
 spec:
   matchConstraints:
     resourceRules:
@@ -69,7 +65,7 @@ spec:
 
     - name: exclude-system-namespaces
       expression: >
-        !(object.metadata.namespace in [
+        !(request.namespace in [
           'argocd', 'cilium-secrets', 'falco', 'grafana',
           'kube-node-lease', 'kube-public', 'kube-system',
           'kyverno', 'monitoring', 'prometheus', 'loki', 'alloy'
