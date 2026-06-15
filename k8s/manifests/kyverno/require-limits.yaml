@@ -1,0 +1,64 @@
+---
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: require-limits
+spec:
+  validationActions:
+    - Audit
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
+
+      - apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["deployments", "daemonsets", "statefulsets"]
+
+      - apiGroups: ["batch"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["jobs", "cronjobs"]
+
+  matchConditions:
+    - name: exclude-system-namespaces
+      expression: >
+        !(request.namespace in [
+          'argocd', 'cilium-secrets', 'falco', 'grafana',
+          'kube-node-lease', 'kube-public', 'kube-system',
+          'kyverno', 'monitoring', 'prometheus', 'loki', 'alloy'
+        ])
+
+  validations:
+    - message: "Resources allocations and limits are required in containers (Workload). Please set resources.request and resources.limits."
+      expression: >
+        request.kind.kind in ['Deployment', 'DaemonSet', 'StatefulSet', 'Job'] ?
+        (!has(object.spec.template.spec.containers) || object.spec.template.spec.containers.all(c, has(c.resources) && has(c.resources.requests) &&  has(c.resources.limits) && has(c.resources.requests.cpu) && has(c.resources.requests.memory) && has(c.resources.limits.memory) && has(c.resources.limits.cpu))) : true
+
+    - message: "Resources allocations and limits are required in initContainers (Workload). Please set resources.request and resources.limits."
+      expression: >
+        request.kind.kind in ['Deployment', 'DaemonSet', 'StatefulSet', 'Job'] ?
+        (!has(object.spec.template.spec.initContainers) || object.spec.template.spec.initContainers.all(c, has(c.resources) && has(c.resources.requests) &&  has(c.resources.limits) && has(c.resources.requests.cpu) && has(c.resources.requests.memory) && has(c.resources.limits.memory) && has(c.resources.limits.cpu))) : true
+
+    - message: "Resources allocations and limits are required in containers (Pod). Please set resources.request and resources.limits."
+      expression: >
+        request.kind.kind == 'Pod' ?
+        object.spec.containers.all(c, has(c.resources) && has(c.resources.requests) &&  has(c.resources.limits) && has(c.resources.requests.cpu) && has(c.resources.requests.memory) && has(c.resources.limits.memory) && has(c.resources.limits.cpu)) : true
+
+    - message: "Resources allocations and limits are required in initContainers (Pod). Please set resources.request and resources.limits."
+      expression: >
+        request.kind.kind == 'Pod' ?
+        (!has(object.spec.initContainers) || object.spec.initContainers.all(c, has(c.resources) && has(c.resources.requests) &&  has(c.resources.limits) && has(c.resources.requests.cpu) && has(c.resources.requests.memory) && has(c.resources.limits.memory) && has(c.resources.limits.cpu))) : true
+
+    - message: "Resources allocations and limits are required in containers (CronJob). Please set resources.request and resources.limits."
+      expression: >
+        request.kind.kind == 'CronJob' ?
+        object.spec.jobTemplate.spec.template.spec.containers.all(c, has(c.resources) && has(c.resources.requests) &&  has(c.resources.limits) && has(c.resources.requests.cpu) && has(c.resources.requests.memory) && has(c.resources.limits.memory) && has(c.resources.limits.cpu)) : true
+
+    - message: "Resources allocations and limits are required in initContainers (CronJob). Please set resources.request and resources.limits."
+      expression: >
+        request.kind.kind == 'CronJob' ?
+        (!has(object.spec.jobTemplate.spec.template.spec.initContainers) || object.spec.jobTemplate.spec.template.spec.initContainers.all(c, has(c.resources) && has(c.resources.requests) &&  has(c.resources.limits) && has(c.resources.requests.cpu) && has(c.resources.requests.memory) && has(c.resources.limits.memory) && has(c.resources.limits.cpu))) : true
