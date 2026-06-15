@@ -13,6 +13,7 @@ ignore: |
   .github/
   k8s/apps/secrets/
   k8s/manifests/grafana/
+  k8s/manifests/kyverno/
 
 rules:
   line-length:
