@@ -3,6 +3,7 @@ apiVersion: policies.kyverno.io/v1
 kind: MutatingPolicy
 metadata:
   name: mutate-secure-context-cronjobs-containers
+
 spec:
   matchConstraints:
     resourceRules:
@@ -65,7 +66,7 @@ spec:
 
     - name: exclude-system-namespaces
       expression: >
-        !(request.namespace in [
+        !(object.metadata.namespace in [
           'argocd', 'cilium-secrets', 'falco', 'grafana',
           'kube-node-lease', 'kube-public', 'kube-system',
           'kyverno', 'monitoring', 'prometheus', 'loki', 'alloy'

@@ -26,7 +26,7 @@ spec:
   matchConditions:
     - name: exclude-system-namespaces
       expression: >
-        !(request.namespace in [
+        !(object.metadata.namespace in [
           'argocd', 'cilium-secrets', 'falco', 'grafana',
           'kube-node-lease', 'kube-public', 'kube-system',
           'kyverno', 'monitoring', 'prometheus', 'loki', 'alloy'
