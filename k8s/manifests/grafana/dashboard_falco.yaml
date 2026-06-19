@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: dashboard-falco-modified
+  name: dashboard-falco-v2
   namespace: grafana
   labels:
     grafana_dashboard: "1"
