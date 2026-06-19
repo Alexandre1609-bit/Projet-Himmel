@@ -4,10 +4,9 @@ customRules:
     - rule: shell_in_container
       desc: check for any shell activity within a container
       condition: >
-        (evt.type in(execve, execveat)) and
+        evt.type in (execve, execveat) and
         container.id != host and
-        (proc.name = bash or
-        proc.name = ksh)
+        proc.name in ("bash", "ksh")
       output: >
         shell in a container detected |
         user=%user.name container_id=%container.id container_name=%container.name
@@ -17,9 +16,9 @@ customRules:
     - rule: deny_nmap
       desc: deny nmap scan in a container
       condition: >
-        (evt.type in (connect)) and
+        evt.type == execve and
         container.id != host and
-        (proc.name = nmap)
+        proc.name == "nmap"
       output: >
         Network scan detected |
         user=%user.name container_id=%container.id container_name=%container.name
@@ -29,11 +28,11 @@ customRules:
     - rule: read_etc_shadow
       desc: check for any consult of /etc/shadow
       condition: >
-        (evt.type in(open, openat)) and
+        evt.type in (open, openat, openat2) and
         container.id != host and
-        (fd.name == /etc/shadow)
+        fd.name == "/etc/shadow"
       output: >
-        /etc/shadow opened |
+        /etc/shadow readed |
         user=%user.name container_id=%container.id  continer_name=%container.name
         path:%fd.name
       priority: WARNING
