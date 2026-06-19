@@ -84,7 +84,7 @@ Puis pour ce qui est de la dernière règle je n'ai pas pu vérifier directement
 
 Enfin pour ce qui est de l'observabilité, mon dashboard Falco a pu repérer les syscall et les règles implémentées, donc même si ma seconde règle n'était pas visible, le dashboard, lui, l'a bien détecté !
 
-![Alt](docs/images/system/Falco/falco_detection_dashboard.png)
+![Dashboard Falco](images/system/Falco/falco_detection_dashboard.png)
 
 # 3. Cilium NetworkPolicy
 
@@ -145,7 +145,7 @@ J'ai essayé et pensé plusieurs solutions afin de pouvoir contourner le SNAT :
 
    Pourquoi ? Les NetworkPolicies dans Kubernetes sont purement additives. Elles fonctionnent avec une logique inclusive "OU" (OR). Avoir une règle qui autorise tout le monde annule automatiquement la règle qui restreint.
 
-![Alt](docs/images/system/Cilium/first_hubble_logs.png)
+![Logs Hubble](images/system/Cilium/first_hubble_logs.png)
 
 ### Solutions envisagées
 
