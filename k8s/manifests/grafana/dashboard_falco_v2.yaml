@@ -108,7 +108,7 @@ data:
       {
         "datasource": {
           "type": "loki",
-          "uid": "${datasource}"
+          "uid": "loki"
         },
         "fieldConfig": {
           "defaults": {
@@ -172,7 +172,7 @@ data:
       {
         "datasource": {
           "type": "loki",
-          "uid": "${datasource}"
+          "uid": "loki"
         },
         "description": "",
         "fieldConfig": {
@@ -244,7 +244,7 @@ data:
       {
         "datasource": {
           "type": "loki",
-          "uid": "${datasource}"
+          "uid": "loki"
         },
         "description": "",
         "fieldConfig": {
@@ -316,7 +316,7 @@ data:
       {
         "datasource": {
           "type": "loki",
-          "uid": "${datasource}"
+          "uid": "loki"
         },
         "description": "",
         "fieldConfig": {
@@ -388,7 +388,7 @@ data:
       {
         "datasource": {
           "type": "loki",
-          "uid": "${datasource}"
+          "uid": "loki"
         },
         "fieldConfig": {
           "defaults": {
@@ -496,7 +496,7 @@ data:
         "datasource": {
           "default": false,
           "type": "loki",
-          "uid": "${datasource}"
+          "uid": "loki"
         },
         "fieldConfig": {
           "defaults": {
@@ -580,7 +580,7 @@ data:
           {
             "datasource": {
               "type": "loki",
-              "uid": "${datasource}"
+              "uid": "loki"
             },
             "direction": "backward",
             "editorMode": "code",
@@ -689,7 +689,7 @@ data:
               {
                 "datasource": {
                   "type": "loki",
-                  "uid": "${datasource}"
+                  "uid": "loki"
                 },
                 "expr": "{from=\"falcosidekick\",priority=~\"$priority\"} |~ \"(?i)$searchpattern\"\n| line_format `{{ if eq .priority \"Emergency\" }} ❌ {{ else if eq .priority \"Alert\" }} ❌ {{ else if eq .priority \"Critical\" }} ❌ {{ else if eq .priority \"Error\" }} 🔴 {{ else if eq .priority \"Warning\" }} 🟠 {{ else if eq .priority \"Notice\" }} 🟡 {{ else if eq .priority \"Informational\" }} 🔵 {{ else if eq .priority \"Debug\" }} 🟣 {{__line__}} {{else}} ⚪ {{end}} {{__line__}}`",
                 "queryType": "range",
