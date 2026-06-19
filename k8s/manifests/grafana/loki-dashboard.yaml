@@ -1,4 +1,3 @@
----
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -27,7 +26,7 @@ data:
           }
       ],
       "__elements":{
-          
+
       },
       "__requires":[
           {
@@ -94,7 +93,7 @@ data:
       "graphTooltip":0,
       "id":null,
       "links":[
-          
+
       ],
       "panels":[
           {
@@ -107,7 +106,7 @@ data:
             },
             "id":22,
             "panels":[
-                
+
             ],
             "title":"All services statistics",
             "type":"row"
@@ -130,12 +129,12 @@ data:
                   },
                   "decimals":0,
                   "mappings":[
-                      
+
                   ],
                   "unit":"short"
                 },
                 "overrides":[
-                  
+
                 ]
             },
             "gridPos":{
@@ -150,7 +149,7 @@ data:
             "options":{
                 "legend":{
                   "calcs":[
-                      
+
                   ],
                   "displayMode":"table",
                   "placement":"right",
@@ -237,7 +236,7 @@ data:
                       }
                   },
                   "mappings":[
-                      
+
                   ],
                   "thresholds":{
                       "mode":"absolute",
@@ -255,7 +254,7 @@ data:
                   "unit":"short"
                 },
                 "overrides":[
-                  
+
                 ]
             },
             "gridPos":{
@@ -268,11 +267,11 @@ data:
             "maxDataPoints":100,
             "options":{
                 "dataLinks":[
-                  
+
                 ],
                 "legend":{
                   "calcs":[
-                      
+
                   ],
                   "displayMode":"table",
                   "placement":"bottom",
@@ -319,10 +318,10 @@ data:
                   "description":"Live logs is a like 'tail -f' in a real time",
                   "fieldConfig":{
                       "defaults":{
-                        
+
                       },
                       "overrides":[
-                        
+
                       ]
                   },
                   "gridPos":{
@@ -399,7 +398,7 @@ data:
                         "unit":"short"
                       },
                       "overrides":[
-                        
+
                       ]
                   },
                   "gridPos":{
@@ -462,7 +461,7 @@ data:
                         },
                         "decimals":0,
                         "mappings":[
-                            
+
                         ],
                         "unit":"short"
                       },
@@ -510,7 +509,7 @@ data:
                   "options":{
                       "legend":{
                         "calcs":[
-                            
+
                         ],
                         "displayMode":"table",
                         "placement":"bottom",
@@ -598,7 +597,7 @@ data:
                         },
                         "decimals":0,
                         "mappings":[
-                            
+
                         ],
                         "thresholds":{
                             "mode":"absolute",
@@ -616,7 +615,7 @@ data:
                         "unit":"short"
                       },
                       "overrides":[
-                        
+
                       ]
                   },
                   "gridPos":{
@@ -630,7 +629,7 @@ data:
                   "maxDataPoints":"",
                   "options":{
                       "dataLinks":[
-                        
+
                       ],
                       "legend":{
                         "calcs":[
@@ -702,7 +701,7 @@ data:
                         "unit":"short"
                       },
                       "overrides":[
-                        
+
                       ]
                   },
                   "gridPos":{
@@ -765,7 +764,7 @@ data:
                         },
                         "decimals":0,
                         "mappings":[
-                            
+
                         ],
                         "unit":"short"
                       },
@@ -813,7 +812,7 @@ data:
                   "options":{
                       "legend":{
                         "calcs":[
-                            
+
                         ],
                         "displayMode":"table",
                         "placement":"bottom",
@@ -901,7 +900,7 @@ data:
                         },
                         "decimals":0,
                         "mappings":[
-                            
+
                         ],
                         "thresholds":{
                             "mode":"absolute",
@@ -919,7 +918,7 @@ data:
                         "unit":"short"
                       },
                       "overrides":[
-                        
+
                       ]
                   },
                   "gridPos":{
@@ -933,7 +932,7 @@ data:
                   "maxDataPoints":"",
                   "options":{
                       "dataLinks":[
-                        
+
                       ],
                       "legend":{
                         "calcs":[
@@ -1007,7 +1006,7 @@ data:
                         "unit":"percent"
                       },
                       "overrides":[
-                        
+
                       ]
                   },
                   "gridPos":{
@@ -1067,7 +1066,7 @@ data:
           "list":[
             {
                 "current":{
-                  
+
                 },
                 "datasource":{
                   "type":"loki",
@@ -1075,11 +1074,12 @@ data:
                 },
                 "definition":"label_values({container_name=~\".+\"}, container_name)",
                 "includeAll":true,
+                "allValue": ".+",
                 "label":"Container",
                 "multi":true,
                 "name":"container_name",
                 "options":[
-                  
+
                 ],
                 "query":"label_values({container_name=~\".+\"}, container_name)",
                 "refresh":2,
@@ -1088,7 +1088,7 @@ data:
             },
             {
                 "current":{
-                  
+
                 },
                 "datasource":{
                   "type":"loki",
@@ -1096,11 +1096,12 @@ data:
                 },
                 "definition":"label_values({container_name=~\"$container_name\"}, service_name)",
                 "includeAll":true,
+                "allValue": ".+",
                 "label":"Service",
                 "multi":true,
                 "name":"service_name",
                 "options":[
-                  
+
                 ],
                 "query":"label_values({container_name=~\"$container_name\"}, service_name)",
                 "refresh":2,
@@ -1109,7 +1110,7 @@ data:
             },
             {
                 "current":{
-                  
+
                 },
                 "datasource":{
                   "type":"loki",
@@ -1117,11 +1118,12 @@ data:
                 },
                 "definition":"label_values({container_name=~\"$container_name\"}, instance)",
                 "includeAll":true,
+                "allValue": ".+",
                 "label":"Instance",
                 "multi":true,
                 "name":"instance",
                 "options":[
-                  
+
                 ],
                 "query":"label_values({container_name=~\"$container_name\"}, instance)",
                 "refresh":2,
@@ -1155,7 +1157,7 @@ data:
                 "label":"Data Source",
                 "name":"DS_LOKI",
                 "options":[
-                  
+
                 ],
                 "query":"loki",
                 "refresh":1,
