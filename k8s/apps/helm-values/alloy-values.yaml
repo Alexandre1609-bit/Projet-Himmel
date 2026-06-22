@@ -13,13 +13,13 @@ alloy:
 
       discovery.relabel "pod_logs" {
         targets = discovery.kubernetes.pods.targets
-        
+
         rule {
           source_labels = ["__meta_kubernetes_namespace"]
           action        = "replace"
           target_label  = "namespace"
         }
-        
+
         rule {
           source_labels = ["__meta_kubernetes_pod_name"]
           action        = "replace"
@@ -38,7 +38,6 @@ alloy:
         forward_to = [loki.process.filter_logs.receiver]
       }
 
-     
       loki.process "filter_logs" {
         stage.docker {}
 
