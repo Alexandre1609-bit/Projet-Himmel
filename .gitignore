@@ -6,7 +6,7 @@ Thumbs.db
 .terraform/
 *.tfstate
 *.tfstate.backup
-*.tfvars        
+*.tfvars
 
 # --- Ansible ---
 *.retry
@@ -23,19 +23,19 @@ venv/
 *.key
 *.p12
 id_rsa*
-id_ed25519* 
+id_ed25519*
 known_hosts
 authorized_keys
 secrets.yaml
 *.env
 
 # --- Kubernetes --- #Pour plus tard !!!!
-config           
+config
 kubeconfig
 *.secret.yaml
 local-secrets/
 
 # --- IDE ---
 .vscode/
-.idea/          
+.idea/
 *.swp
