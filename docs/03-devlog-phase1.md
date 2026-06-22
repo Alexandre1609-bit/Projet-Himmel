@@ -44,7 +44,7 @@ J'ai implémenté une double sécurité dans le rôle `os-hardening` :
 * Forçage du paramètre `SystemdCgroup = true` pour aligner le gestionnaire de conteneur sur le gestionnaire de services d'Ubuntu (Systemd).
 * Mise en place d'un Handler Ansible : Le service Containerd ne redémarre que si la configuration a été modifiée, garantissant l'idempotence.
 
-### 3. La Persistance des Modules Noyau 
+### 3. La Persistance des Modules Noyau
 
 **Problème :** Les modules nécessaires au réseau K8s (`overlay`, `br_netfilter`) chargés via `modprobe` disparaissent au redémarrage.
 **Solution :**

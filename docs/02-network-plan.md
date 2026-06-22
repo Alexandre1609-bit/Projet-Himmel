@@ -7,7 +7,7 @@ Mon cluster est situé dans une pièce éloignée de la Box Internet principale,
 Pour garantir la connectivité tout en isolant le lab, j'ai opté pour une architecture en "îlot" :
 
 ### 1. L'Uplink : TP-Link RE605X
-Ce répéteur agit comme une passerelle. Il se connecte au WiFi domestique et délivre la connexion via son port Ethernet RJ45. Il permet aux serveurs d'accéder à Internet pour les mises à jour et le téléchargement des images conteneurs. 
+Ce répéteur agit comme une passerelle. Il se connecte au WiFi domestique et délivre la connexion via son port Ethernet RJ45. Il permet aux serveurs d'accéder à Internet pour les mises à jour et le téléchargement des images conteneurs.
 
 ### 2. Core Switch : TP-Link TL-SG108E
 J'ai choisi un switch administrable de couche 2.
