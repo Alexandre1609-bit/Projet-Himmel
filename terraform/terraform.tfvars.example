@@ -6,4 +6,3 @@ cilium_version = "1.16.0" //See https://github.com/cilium/cilium/releases
 //argocd
 server_service_type = "xxxx" //Choose between NodePort or LoadBalancer
 argocd_version      = "3.3.x" //See https://github.com/argoproj/argo-cd/releases
- 
