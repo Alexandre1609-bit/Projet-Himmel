@@ -4,18 +4,14 @@ resource "helm_release" "cilium_helm_chart" {
   chart      = "cilium"
   version    = var.cilium_version
   namespace  = "kube-system"
-  values = [yamlencode({
-    "ipam.operator.clusterPoolIPv4PodCIDRList" = var.pod_cidr
-    kubeProxyReplacement                       = "true"
-    "k8sServiceHost"                           = "192.168.1.50"
-    "k8sServicePort"                           = "6443"
-    "hubble.metrics.enabled"                   = "dns,drop,tcp,flow,port_distribution,icmp,httpV2:exemplars=true;labelsContext=source_ip,source_namespace,destination_ip,destination_namespace,destination_workload,traffic_direction}"
-  })]
-  create_namespace = true
 
   set = [{
     name  = "hubble.enabled"
     value = "true"
+    },
+    {
+      name  = "hubble.metrics.enabled"
+      value = "{dns,drop,tcp,flow,port_distribution,icmp,httpV2:exemplars=true;labelsContext=source_ip,source_namespace,destination_ip,destination_namespace,destination_workload,traffic_direction}"
     },
     {
       name  = "hubble.relay.enabled"
@@ -34,12 +30,64 @@ resource "helm_release" "cilium_helm_chart" {
       value = "30082"
     },
     {
+      name  = "operator.prometheus.enabled"
+      value = "true"
+    },
+    {
       name  = "prometheus.enabled"
       value = "true"
     },
     {
       name  = "prometheus.port"
       value = "9962"
-    }
+    },
+    {
+      name  = "gatewayAPI.enabled"
+      value = "true"
+    },
+    {
+      name  = "l2announcements.enabled"
+      value = "true"
+    },
+    {
+      name  = "l2announcements.leaseDuration"
+      value = "3s"
+    },
+    {
+      name  = "l2announcements.leaseRenewDeadline"
+      value = "1s"
+    },
+    {
+      name  = "l2announcements.leaseRetryPeriod"
+      value = "500ms"
+    },
+    {
+      name  = "devices"
+      value = "eno1"
+    },
+    {
+      name  = "externalIPs.enabled"
+      value = "true"
+    },
+    {
+      name  = "k8sClientRateLimit.qps"
+      value = "50"
+    },
+    {
+      name  = "k8sClientRateLimit.burst"
+      value = "100"
+    },
+    {
+      name  = "kubeProxyReplacement"
+      value = "true"
+    },
+    {
+      name  = "k8sServiceHost"
+      value = var.server_ip
+    },
+    {
+      name  = "k8sServicePort"
+      value = var.service_port
+    },
   ]
 }
