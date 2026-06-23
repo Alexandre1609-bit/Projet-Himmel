@@ -6,7 +6,7 @@ metadata:
 spec:
   serviceSelector:
     matchLabels:
-      io.cilium.gateway/owning-gateway: nginx-gateway
+      io.cilium.gateway/owning-gateway: public-gateway
   nodeSelector:
     matchExpressions:
       - key: node-role.kubernetes.io/control-plane

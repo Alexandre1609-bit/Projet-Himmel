@@ -9,4 +9,4 @@ spec:
     - cidr: "192.168.1.192/26"
   serviceSelector:
     matchLabels:
-      io.cilium.gateway/owning-gateway: nginx-gateway
+      io.cilium.gateway/owning-gateway: public-gateway
