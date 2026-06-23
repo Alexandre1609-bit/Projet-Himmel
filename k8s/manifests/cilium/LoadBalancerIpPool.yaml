@@ -4,7 +4,7 @@ kind: CiliumLoadBalancerIPPool
 metadata:
   name: "first-pool"
 spec:
-  allowFirstLastIPs: No
+  allowFirstLastIPs: "No"
   blocks:
     - cidr: "192.168.1.192/26"
   serviceSelector:
