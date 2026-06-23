@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: grafana
+  labels:
+    tier: infra
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: alloy
+  labels:
+    tier: infra
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: loki
+  labels:
+    tier: infra
