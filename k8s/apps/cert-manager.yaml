@@ -20,8 +20,7 @@ spec:
         config:
           apiVersion: "controller.config.cert-manager.io/v1alpha1"
           kind: "ControllerConfiguration"
-          gatewayAPI:
-            enable: true
+          enableGatewayAPI: true
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
