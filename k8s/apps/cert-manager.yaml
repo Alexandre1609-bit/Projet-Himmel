@@ -18,7 +18,7 @@ spec:
           enabled: true
           keep: true
         config:
-          enableGatewayAPI: rue
+          enableGatewayAPI: true
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
