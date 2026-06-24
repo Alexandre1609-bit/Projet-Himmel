@@ -7,6 +7,12 @@ spec:
   validationActions:
     - Deny
   matchConstraints:
+    namespaceSelector:
+      matchExpressions:
+        - key: tier
+          operator: NotIn
+          values: ["infra"]
+
     resourceRules:
       - apiGroups: [""]
         apiVersions: ["v1"]
@@ -23,14 +29,6 @@ spec:
         operations: ["CREATE", "UPDATE"]
         resources: ["jobs", "cronjobs"]
 
-  matchConditions:
-    - name: exclude-system-namespaces
-      expression: >
-        !(object.metadata.namespace in [
-          'argocd', 'cilium-secrets', 'falco', 'grafana',
-          'kube-node-lease', 'kube-public', 'kube-system',
-          'kyverno', 'monitoring', 'prometheus', 'loki', 'alloy'
-        ])
   validations:
     - message: "Please add at least one of the following labels to the resource: 'env', 'prod', or 'team'."
       expression: "has(object.metadata.labels) && ['env', 'prod', 'team'].exists(k, k in object.metadata.labels)"

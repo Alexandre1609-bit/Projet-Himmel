@@ -5,6 +5,12 @@ metadata:
   name: mutate-secure-context-workloads-containers
 spec:
   matchConstraints:
+    namespaceSelector:
+      matchExpressions:
+        - key: tier
+          operator: NotIn
+          values: ["infra"]
+
     resourceRules:
       - apiGroups: ["apps"]
         apiVersions: ["v1"]
@@ -15,14 +21,6 @@ spec:
         operations: ["CREATE", "UPDATE"]
         resources: ["jobs"]
 
-  matchConditions:
-    - name: exclude-system-namespaces
-      expression: >
-        !(object.metadata.namespace in [
-          'argocd', 'cilium-secrets', 'falco', 'grafana',
-          'kube-node-lease', 'kube-public', 'kube-system',
-          'kyverno', 'monitoring', 'prometheus', 'loki', 'alloy'
-        ])
   mutations:
     - patchType: ApplyConfiguration
       applyConfiguration:
@@ -53,6 +51,12 @@ metadata:
   name: mutate-secure-context-workloads-init-containers
 spec:
   matchConstraints:
+    namespaceSelector:
+      matchExpressions:
+        - key: tier
+          operator: NotIn
+          values: ["infra"]
+
     resourceRules:
       - apiGroups: ["apps"]
         apiVersions: ["v1"]
@@ -67,13 +71,6 @@ spec:
     - name: check-if-init-containers-exist
       expression: "has(object.spec.template.spec.initContainers)"
 
-    - name: exclude-system-namespaces
-      expression: >
-        !(object.metadata.namespace in [
-          'argocd', 'cilium-secrets', 'falco', 'grafana',
-          'kube-node-lease', 'kube-public', 'kube-system',
-          'kyverno', 'monitoring', 'prometheus', 'loki', 'alloy'
-        ])
   mutations:
     - patchType: ApplyConfiguration
       applyConfiguration:

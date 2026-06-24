@@ -7,6 +7,12 @@ spec:
   validationActions:
     - Deny
   matchConstraints:
+    namespaceSelector:
+      matchExpressions:
+        - key: tier
+          operator: NotIn
+          values: ["infra"]
+
     resourceRules:
       - apiGroups: [""]
         apiVersions: ["v1"]
@@ -22,15 +28,6 @@ spec:
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["jobs", "cronjobs"]
-
-  matchConditions:
-    - name: exclude-system-namespaces
-      expression: >
-        !(object.metadata.namespace in [
-          'argocd', 'cilium-secrets', 'falco', 'grafana',
-          'kube-node-lease', 'kube-public', 'kube-system',
-          'kyverno', 'monitoring', 'prometheus', 'loki', 'alloy'
-        ])
 
   validations:
     - message: "please do not use ':latest' image in containers (workload)"

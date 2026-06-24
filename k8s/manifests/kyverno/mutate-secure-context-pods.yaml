@@ -5,20 +5,18 @@ metadata:
   name: mutate-secure-context-pods-containers
 spec:
   matchConstraints:
+    namespaceSelector:
+      matchExpressions:
+        - key: tier
+          operator: NotIn
+          values: ["infra"]
+
     resourceRules:
       - apiGroups: ['']
         apiVersions: ["v1"]
         operations: ["CREATE", "UPDATE"]
         resources: ["pods"]
 
-  matchConditions:
-    - name: exclude-system-namespaces
-      expression: >
-        !(object.metadata.namespace in [
-          'argocd', 'cilium-secrets', 'falco', 'grafana',
-          'kube-node-lease', 'kube-public', 'kube-system',
-          'kyverno', 'monitoring', 'prometheus', 'loki', 'alloy'
-        ])
   mutations:
     - patchType: ApplyConfiguration
       applyConfiguration:
@@ -45,6 +43,12 @@ metadata:
   name: mutate-secure-context-pods-init-containers
 spec:
   matchConstraints:
+    namespaceSelector:
+      matchExpressions:
+        - key: tier
+          operator: NotIn
+          values: ["infra"]
+
     resourceRules:
       - apiGroups: ['']
         apiVersions: ["v1"]
@@ -55,13 +59,6 @@ spec:
     - name: check-if-init-containers-exist
       expression: "has(object.spec.initContainers)"
 
-    - name: exclude-system-namespaces
-      expression: >
-        !(object.metadata.namespace in [
-          'argocd', 'cilium-secrets', 'falco', 'grafana',
-          'kube-node-lease', 'kube-public', 'kube-system',
-          'kyverno', 'monitoring', 'prometheus', 'loki', 'alloy'
-        ])
   mutations:
     - patchType: ApplyConfiguration
       applyConfiguration:

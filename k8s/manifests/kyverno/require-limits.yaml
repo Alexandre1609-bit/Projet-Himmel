@@ -7,6 +7,12 @@ spec:
   validationActions:
     - Audit
   matchConstraints:
+    namespaceSelector:
+      matchExpressions:
+        - key: tier
+          operator: NotIn
+          values: ["infra"]
+
     resourceRules:
       - apiGroups: [""]
         apiVersions: ["v1"]
@@ -23,14 +29,6 @@ spec:
         operations: ["CREATE", "UPDATE"]
         resources: ["jobs", "cronjobs"]
 
-  matchConditions:
-    - name: exclude-system-namespaces
-      expression: >
-        !(object.metadata.namespace in [
-          'argocd', 'cilium-secrets', 'falco', 'grafana',
-          'kube-node-lease', 'kube-public', 'kube-system',
-          'kyverno', 'monitoring', 'prometheus', 'loki', 'alloy'
-        ])
   validations:
     - message: "Resources allocations and limits are required in containers (Workload). Please set resources.request and resources.limits."
       expression: >
