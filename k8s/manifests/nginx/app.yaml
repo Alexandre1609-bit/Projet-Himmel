@@ -35,8 +35,8 @@ spec:
             - mountPath: "/var/www/html"
               name: mypd
           securityContext:
-            allowPrivilegeEscalation: true
-            privileged: true
+            allowPrivilegeEscalation: false
+            privileged: false
       volumes:
         - name: mypd
           persistentVolumeClaim:
