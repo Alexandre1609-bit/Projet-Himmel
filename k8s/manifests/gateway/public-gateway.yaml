@@ -4,6 +4,8 @@ kind: Gateway
 metadata:
   name: public-gateway
   namespace: gateway-system
+  annotations:
+    argocd.argoproj.io/sync-options: ServerSideApply=true
 spec:
   gatewayClassName: cilium
   listeners:
