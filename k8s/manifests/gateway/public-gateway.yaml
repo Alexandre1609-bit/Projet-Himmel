@@ -17,6 +17,7 @@ spec:
         certificateRefs:
           - kind: Secret
             name: internal-ca-secret
+            namespace: cert-manager
       allowedRoutes:
         namespaces:
           from: Selector
