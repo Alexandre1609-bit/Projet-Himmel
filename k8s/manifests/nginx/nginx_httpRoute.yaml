@@ -1,6 +1,6 @@
 ---
 apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
+kind: HTTPRoute #TLSRoute ? se renseigner pour une encryption du début à la fin
 metadata:
   name: http-app-nginx
   namespace: nginx
@@ -8,6 +8,7 @@ spec:
   parentRefs:
     - name: public-gateway
       namespace: gateway-system
+  hostname: "*.himmel-local.com" # à définir, doit match un hostname dans la gateway ?
   rules:
     - matches:
         - path:

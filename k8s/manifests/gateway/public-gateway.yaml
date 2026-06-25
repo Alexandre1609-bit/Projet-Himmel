@@ -7,12 +7,33 @@ metadata:
 spec:
   gatewayClassName: cilium
   listeners:
-    - protocol: HTTPS
+    - name: https-1
+      protocol: HTTPS
       port: 443
-      name: web-gw
+      hostname: "*.himmel-local.com"
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: internal-ca-secret
       allowedRoutes:
         namespaces:
           from: Selector
           selector:
             matchLabels:
               tier: app
+
+###
+#Earlier you saw how you can terminate the TLS connection at the Gateway. That was using the Gateway API in Terminate mode. In this instance, the Gateway is in Passthrough mode: the difference is that the traffic remains encrypted all the way through between the client and the pod.
+
+#In other words:
+
+#In Terminate:
+
+#Client -> Gateway: HTTPS
+#Gateway -> Pod: HTTP
+#In Passthrough:
+
+#Client -> Gateway: HTTPS
+#Gateway -> Pod: HTTPS
+#The Gateway does not actually inspect the traffic aside from using the SNI header for routing. Indeed the hostnames field defines a set of SNI names that should match against the SNI attribute of TLS ClientHello message in TLS handshake.
+###
