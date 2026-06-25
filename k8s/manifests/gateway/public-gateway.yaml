@@ -12,7 +12,7 @@ spec:
     - name: https-1
       protocol: HTTPS
       port: 443
-      hostname: "*.himmel-local.com"
+      hostnames: "*.himmel-local.com"
       tls:
         certificateRefs:
           - kind: Secret
