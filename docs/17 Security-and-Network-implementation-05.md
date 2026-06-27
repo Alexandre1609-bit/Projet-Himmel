@@ -69,7 +69,7 @@ Je me penche du côté de la box internet. Je me connecte à l'interface d'admin
 
 C'est en vérité ici que l'incident devient critique : pour contourner le conflit j'essaie d'attribuer une adresse IP qui se situe hors de la plage DHCP de la box. Ce qui s'ensuit est un crash total de la carte réseau **"eno1"** au démarrage du nœud. Impossible d'accéder au CLI, il est surchargé de messages d'erreur, j'ai bien cru que je devais remplacer ma carte réseau.
 
-_ajouter image CLI_
+![Network Failure](images/system/CLI/cli-network-failure.jpeg)
 
 C'est du sérieux, je décide de passer à l'action de façon plus directe. Tout d'abord je "_drain_" mon nœud via `kubectl drain` afin que le scheduler puisse réattribuer les ressources de mon nœud aux autres nœuds disponibles, ensuite je débranche la machine et l'emmène sur mon bureau : écran, clavier, souris. Pour contourner les erreurs j'ai dû passer par le GRUB (_GRand Unified Bootloader_). Je le lance en mode **debug** et je décide d'aller éditer manuellement le fichier de configuration de l'interface **eno1** pour lui donner une adresse IP valide.
 
