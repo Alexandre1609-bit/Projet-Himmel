@@ -29,7 +29,7 @@ authorized_keys
 secrets.yaml
 *.env
 
-# --- Kubernetes --- #Pour plus tard !!!!
+# --- Kubernetes ---
 config
 kubeconfig
 *.secret.yaml
@@ -39,3 +39,7 @@ local-secrets/
 .vscode/
 .idea/
 *.swp
+
+
+# --- EN ATTENDANT LE DEPLOIEMENT DDNS ---
+public-ip-cj.yaml
