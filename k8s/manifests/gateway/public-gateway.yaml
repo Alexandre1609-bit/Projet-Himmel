@@ -14,6 +14,7 @@ spec:
       port: 443
       hostname: "*.himmel-local.com"
       tls:
+        mode: Terminate
         certificateRefs:
           - kind: Secret
             name: internal-ca-secret
