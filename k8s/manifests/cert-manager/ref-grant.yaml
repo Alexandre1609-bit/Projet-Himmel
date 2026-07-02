@@ -4,6 +4,8 @@ kind: ReferenceGrant
 metadata:
   name: allow-gateway-read-secrets
   namespace: cert-manager
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   from:
     - group: gateway.networking.k8s.io

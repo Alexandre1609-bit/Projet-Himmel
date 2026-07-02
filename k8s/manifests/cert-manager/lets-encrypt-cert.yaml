@@ -4,6 +4,8 @@ kind: Certificate
 metadata:
   name: projet-himmel-tls
   namespace: cert-manager
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   secretName: himmel-tls-secret
   issuerRef:
