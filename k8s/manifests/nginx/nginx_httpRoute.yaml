@@ -9,7 +9,7 @@ spec:
     - name: public-gateway
       namespace: gateway-system
   hostnames:
-    - "*.himmel-local.com" # à définir, doit match un hostname dans la gateway ?
+    - "projet-himmel.duckdns.org" # à définir, doit match un hostname dans la gateway ?
   rules:
     - matches:
         - path:

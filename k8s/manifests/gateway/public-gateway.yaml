@@ -12,12 +12,12 @@ spec:
     - name: https-1
       protocol: HTTPS
       port: 443
-      hostname: "*.himmel-local.com"
+      hostname: "projet-himmel.duckdns.org"
       tls:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: internal-ca-secret
+            name: himmel-tls-secret
             namespace: cert-manager
       allowedRoutes:
         namespaces:

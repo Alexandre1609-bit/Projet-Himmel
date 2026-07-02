@@ -1,3 +1,4 @@
+---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -13,7 +14,7 @@ spec:
         spec:
           containers:
             - name: duckdns-curl
-              image: curlimages/curl:latest
+              image: curlimages/curl:8.21.0
               env:
                 - name: DUCKDNS_TOKEN
                   valueFrom:
@@ -23,5 +24,5 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - "curl -k -s 'https://www.duckdns.org/update?domains=projet-himmel&token=${DUCKDNS_TOKEN}&ip='"
+                - "curl -k -s 'https://www.duckdns.org/update?domains=projet-himmel&token=$DUCKDNS_TOKEN&ip='"
           restartPolicy: OnFailure
