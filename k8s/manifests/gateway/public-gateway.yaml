@@ -6,7 +6,6 @@ metadata:
   namespace: gateway-system
   annotations:
     argocd.argoproj.io/sync-options: ServerSideApply=true
-    argocd.argoproj.io/sync-wave: "3"
 spec:
   gatewayClassName: cilium
   listeners:
