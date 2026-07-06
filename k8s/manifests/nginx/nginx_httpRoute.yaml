@@ -1,6 +1,6 @@
 ---
 apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute #TLSRoute ? se renseigner pour une encryption du début à la fin
+kind: HTTPRoute
 metadata:
   name: http-app-nginx
   namespace: nginx
@@ -9,8 +9,7 @@ spec:
     - name: public-gateway
       namespace: gateway-system
   hostnames:
-    - "projet-himmel.duckdns.org" # à définir, doit match un hostname dans la gateway ?
-  rules:
+    - "projet-himmel.duckdns.org"
     - matches:
         - path:
             type: PathPrefix
