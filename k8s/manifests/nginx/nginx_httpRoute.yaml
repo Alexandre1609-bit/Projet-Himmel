@@ -4,6 +4,8 @@ kind: HTTPRoute
 metadata:
   name: http-app-nginx
   namespace: nginx
+  labels:
+    tier: app
 spec:
   parentRefs:
     - name: public-gateway
