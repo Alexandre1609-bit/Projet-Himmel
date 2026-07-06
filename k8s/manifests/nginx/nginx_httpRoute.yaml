@@ -10,6 +10,7 @@ spec:
       namespace: gateway-system
   hostnames:
     - "projet-himmel.duckdns.org"
+  rules:
     - matches:
         - path:
             type: PathPrefix
