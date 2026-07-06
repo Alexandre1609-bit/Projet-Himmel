@@ -24,7 +24,8 @@ spec:
       tls:
         mode: Terminate
         certificateRefs:
-          - kind: Secret
+          - group: ''
+            kind: Secret
             name: himmel-tls-secret
             namespace: cert-manager
       allowedRoutes:
