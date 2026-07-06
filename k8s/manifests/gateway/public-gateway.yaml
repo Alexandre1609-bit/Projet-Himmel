@@ -9,7 +9,7 @@ metadata:
 spec:
   gatewayClassName: cilium
   listeners:
-    - name: https-1
+    - name: HTTPS
       protocol: HTTPS
       port: 443
       hostname: "projet-himmel.duckdns.org"
