@@ -14,3 +14,4 @@ spec:
   to:
     - group: ""
       kind: Secret
+      name: himmel-tls-secret
