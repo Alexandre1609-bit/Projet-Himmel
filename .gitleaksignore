@@ -1,0 +1,5 @@
+[allowlist]
+description = "Ignorer le token chiffré DuckDNS"
+paths = [
+    '''dns-token\.yaml$'''
+]
