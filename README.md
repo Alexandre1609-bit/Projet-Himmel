@@ -179,6 +179,8 @@ Detailed progress logs documenting technical decisions, bugs encountered, and co
 | [13 — Security Implementation Step 1](docs/13-Security-implementation-01.md)      | Alertmanager and Slack deployment, introduction of Bitnami Sealed Secrets, and first Kyverno rules |
 | [14 — Security Implementation Step 2](docs/14-Security-implementation-02.md)      | Multiple issues with Kyverno rules, debugging, and learning                                        |
 
+And more in the /docs folder !
+
 ---
 
 _Built with patience. Documented with intent._
