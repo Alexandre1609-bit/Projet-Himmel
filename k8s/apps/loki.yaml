@@ -6,7 +6,7 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
+  sources:
     - repoURL: https://grafana-community.github.io/helm-charts
       chart: loki
       targetRevision: 17.3.1
