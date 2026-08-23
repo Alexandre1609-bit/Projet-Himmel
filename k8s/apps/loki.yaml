@@ -7,39 +7,17 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://grafana-community.github.io/helm-charts
-    chart: loki
-    targetRevision: 17.3.1
-    helm:
-      values: |
-        deploymentMode: SingleBinary
-        read:
-          replicas: 0
-        write:
-          replicas: 0
-        backend:
-          replicas: 0
-        singleBinary:
-          replicas: 1
-          persistence:
-            enabled: false
-        chunksCache:
-          enabled: false
-        resultsCache:
-          enabled: false
-        loki:
-          auth_enabled: false
-          useTestSchema: true
-          commonConfig:
-            replication_factor: 1
-          storage:
-            type: filesystem
-            bucketNames:
-              chunks: chunks
-              ruler: ruler
-              admin: admin
-        persistence:
-          enabled: false
+    - repoURL: https://grafana-community.github.io/helm-charts
+      chart: loki
+      targetRevision: 17.3.1
+      helm:
+        valueFiles:
+          - $values/k8s/apps/helm-values/loki-values.yaml
+
+    - repoURL: "https://github.com/Alexandre1609-bit/Projet-Himmel.git"
+      targetRevision: HEAD
+      ref: values
+
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: loki
