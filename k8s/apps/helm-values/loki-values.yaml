@@ -11,11 +11,11 @@ loki:
   useTestSchema: true
   commonConfig:
     replication_factor: 1
-    storage:
-      type: filesystem
-      bucketNames:
-        chunks: chunks
-        ruler: ruler
-        admin: admin
-        persistence:
-          enabled: false
+  storage:
+    type: filesystem
+    bucketNames:
+      chunks: chunks
+      ruler: ruler
+      admin: admin
+  persistence:
+    enabled: false
