@@ -2,10 +2,17 @@
 controller:
   type: 'daemonset'
 
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
+
 alloy:
+  enableReporting: true # sending Grafana Labs anonymous usage stats to help improve Grafana
+
 
   configMap:
     create: true
+    stabilityLevel: "generally-available"
     content: |
       discovery.kubernetes "pods" {
         role = "pod"
@@ -39,7 +46,7 @@ alloy:
       }
 
       loki.process "filter_logs" {
-        stage.docker {}
+        stage.cri {}
 
         stage.drop {
           source     = ""
@@ -51,7 +58,7 @@ alloy:
 
       loki.write "homelab_loki" {
         endpoint {
-          url = "http://loki-gateway.loki.svc.cluster.local:80/loki/api/v1/push"
+          url = "http://loki-gateway.loki.svc.cluster.local:3100/loki/api/v1/push"
         }
       }
 rbac:
