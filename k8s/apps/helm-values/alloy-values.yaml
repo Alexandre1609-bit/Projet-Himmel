@@ -2,10 +2,6 @@
 controller:
   type: 'daemonset'
 
-  podDisruptionBudget:
-    enabled: true
-    minAvailable: 1
-
 alloy:
   enableReporting: true # sending Grafana Labs anonymous usage stats to help improve Grafana
   stabilityLevel: "generally-available"
