@@ -19,7 +19,6 @@ spec:
       targetRevision: HEAD
       ref: values
 
-    - repoURL:
   destination:
     server: https://kubernetes.default.svc
     namespace: alloy
