@@ -6,11 +6,20 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: https://grafana.github.io/helm-charts
-    chart: alloy
-    targetRevision: 1.9.0
-    path: k8s/apps
+  sources:
+    - repoURL: https://grafana.github.io/helm-charts
+      chart: alloy
+      targetRevision: 1.9.0
+      path: k8s/apps
+      helm:
+        valueFiles:
+          - $values/k8s/apps/helm-values/alloy-values.yaml
+
+    - repoURL: "https://github.com/Alexandre1609-bit/Projet-Himmel.git"
+      targetRevision: HEAD
+      ref: values
+
+    - repoURL:
   destination:
     server: https://kubernetes.default.svc
     namespace: alloy
