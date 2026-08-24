@@ -8,11 +8,10 @@ controller:
 
 alloy:
   enableReporting: true # sending Grafana Labs anonymous usage stats to help improve Grafana
-
+  stabilityLevel: "generally-available"
 
   configMap:
     create: true
-    stabilityLevel: "generally-available"
     content: |
       discovery.kubernetes "pods" {
         role = "pod"
