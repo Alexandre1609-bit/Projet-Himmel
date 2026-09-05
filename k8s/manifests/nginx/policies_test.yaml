@@ -3,6 +3,7 @@ apiVersion: "cilium.io/v2"
 kind: CiliumNetworkPolicy
 metadata:
   name: "l3-rule-test"
+  namespace: nginx
 spec:
   endpointSelector:
     matchLabels:
