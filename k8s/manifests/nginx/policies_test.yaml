@@ -8,6 +8,9 @@ spec:
   endpointSelector:
     matchLabels:
       app: nginx
+  ingress:
+    - fromEntities:
+        - cluster
   ingressDeny:
     - fromEntities:
         - world
