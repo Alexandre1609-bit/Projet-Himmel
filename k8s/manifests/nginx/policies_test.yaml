@@ -10,4 +10,4 @@ spec:
       app: nginx
   ingress:
     - fromEntities:
-        - world
+        - cluster
