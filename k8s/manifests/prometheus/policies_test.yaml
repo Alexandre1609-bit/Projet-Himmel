@@ -10,6 +10,8 @@ spec:
     - fromEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: grafana
+        - matchLabels:
+            io.kubernetes.pod.namespace: prometheus
   egress:
     - toEndpoints:
         - matchLabels:
@@ -20,3 +22,6 @@ spec:
             io.kubernetes.pod.namespace: prometheus
         - matchLabels:
             io.kubernetes.pod.namespace: default
+    - toEntities:
+        - host
+        - remote-node
