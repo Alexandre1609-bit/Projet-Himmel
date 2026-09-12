@@ -12,6 +12,8 @@ spec:
             io.kubernetes.pod.namespace: grafana
         - matchLabels:
             io.kubernetes.pod.namespace: prometheus
+    - fromEntities:
+        - remote-node
   egress:
     - toEndpoints:
         - matchLabels:
