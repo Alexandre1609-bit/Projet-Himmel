@@ -11,6 +11,8 @@ spec:
   ingress:
     - fromEndpoints:
         - matchLabels:
+            k8s-app: cilium-envoy
+        - matchLabels:
             io.kubernetes.pod.namespace: nginx
         - matchLabels:
             io.kubernetes.pod.namespace: gateway-system
