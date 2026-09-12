@@ -27,3 +27,18 @@ spec:
     - toEntities:
         - host
         - remote-node
+
+---
+
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: "alertmanager-egress-world"
+  namespace: prometheus
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: alertmanager
+  egress:
+    - toEntities:
+        - world
