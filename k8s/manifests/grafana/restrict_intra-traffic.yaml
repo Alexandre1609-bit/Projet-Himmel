@@ -5,7 +5,10 @@ metadata:
   name: "limit-traffic-grafana"
   namespace: grafana
 spec:
-  endpointSelector: {}
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: grafana
+
   ingress:
     - fromEndpoints:
         - matchLabels:
@@ -15,3 +18,21 @@ spec:
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
+    - toEntities:
+        - host
+        - remote-node
+
+---
+
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: "grafana-egress-world"
+  namespace: grafana
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: grafana
+  egress:
+    - toEntities:
+        - world
