@@ -18,6 +18,7 @@ spec:
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
     - toEntities:
         - host
         - remote-node
