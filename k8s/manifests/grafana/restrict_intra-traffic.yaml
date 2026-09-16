@@ -2,8 +2,8 @@
 apiVersion: "cilium.io/v2"
 kind: CiliumNetworkPolicy
 metadata:
-  name: "l3-rule-test"
-  namespace: prometheus
+  name: "limit-traffic-grafana"
+  namespace: grafana
 spec:
   endpointSelector: {}
   ingress:
