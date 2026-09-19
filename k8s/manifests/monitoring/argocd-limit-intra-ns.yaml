@@ -11,6 +11,9 @@ spec:
     - fromEntities:
         - host
         - remote-node
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: argocd
 
   egress:
     - toEndpoints:
