@@ -1,4 +1,4 @@
-# Lab — Recréation d'un Pod par un ReplicaSet
+# Lab: Recréation d'un Pod par un ReplicaSet
 
 ## Objectif
 
@@ -44,17 +44,17 @@ Pour cette expérience, j'utilise mon application Nginx déjà existante.
 
 Je vais supprimer un Pod et observer en parallèle l'avancée de sa création, notamment avec :
 
-* `kubectl events`
-* `kubectl get pods`
-* `kubectl logs`
-* `kubectl describe`
+- `kubectl events`
+- `kubectl get pods`
+- `kubectl logs`
+- `kubectl describe`
 
 ### Objectifs
 
-* Confirmer mes connaissances sur le fonctionnement d'un ReplicaSet;
-* Vérifier si le Deployment Controller intervient directement ou si le ReplicaSet Controller prend en charge la recréation du Pod;
-* Vérifier comment le nouveau Pod est affecté à un nœud;
-* Observer les différentes étapes du démarrage du conteneur.
+- Confirmer mes connaissances sur le fonctionnement d'un ReplicaSet;
+- Vérifier si le Deployment Controller intervient directement ou si le ReplicaSet Controller prend en charge la recréation du Pod;
+- Vérifier comment le nouveau Pod est affecté à un nœud;
+- Observer les différentes étapes du démarrage du conteneur.
 
 ---
 
@@ -79,14 +79,14 @@ nginx-deployment-b995944fb   1         1         1       94d
 
 On peut interpréter cette évolution ainsi :
 
-* le Pod est supprimé ;
-* le nombre de Pods actuels passe de 1 à 0 alors que le nombre désiré reste à 1 ;
-* le ReplicaSet Controller constate que l'état réel ne correspond plus à l'état désiré ;
-* il crée un nouvel objet Pod via l'API Server ;
-* le nouveau Pod est ensuite pris en charge par le kubelet du nœud concerné ;
-* le conteneur est finalement créé et démarré.
+- le Pod est supprimé ;
+- le nombre de Pods actuels passe de 1 à 0 alors que le nombre désiré reste à 1 ;
+- le ReplicaSet Controller constate que l'état réel ne correspond plus à l'état désiré ;
+- il crée un nouvel objet Pod via l'API Server ;
+- le nouveau Pod est ensuite pris en charge par le kubelet du nœud concerné ;
+- le conteneur est finalement créé et démarré.
 
-*Il est important de préciser que le ReplicaSet Controller ne récupère pas directement l'état du nœud auprès du kubelet. Il travaille sur l'état des objets Kubernetes exposé par l'API Server et cherche en permanence à faire correspondre l'état réel à l'état désiré.*
+_Il est important de préciser que le ReplicaSet Controller ne récupère pas directement l'état du nœud auprès du kubelet. Il travaille sur l'état des objets Kubernetes exposé par l'API Server et cherche en permanence à faire correspondre l'état réel à l'état désiré._
 
 ---
 
@@ -187,8 +187,8 @@ Dans cette expérience, le Scheduler n'est pas intervenu car `nodeName: node3` �
 
 L'expérience permet donc de distinguer :
 
-* le **ReplicaSet Controller**, qui maintient le nombre désiré de Pods ;
-* le **Scheduler**, qui attribue normalement un nœud aux Pods non encore assignés ;
-* le **kubelet**, qui prend en charge le Pod sur son nœud ;
-* le **CRI**, qui sert d'interface entre le kubelet et le runtime ;
-* **containerd**, qui prend ensuite en charge l'exécution du conteneur.
+- le **ReplicaSet Controller**, qui maintient le nombre désiré de Pods ;
+- le **Scheduler**, qui attribue normalement un nœud aux Pods non encore assignés ;
+- le **kubelet**, qui prend en charge le Pod sur son nœud ;
+- le **CRI**, qui sert d'interface entre le kubelet et le runtime ;
+- **containerd**, qui prend ensuite en charge l'exécution du conteneur.
