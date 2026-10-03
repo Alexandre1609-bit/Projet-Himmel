@@ -12,7 +12,7 @@ Il faut savoir le trafic "publique", dans mon cluster, passe par une gateway, c'
 
 - Gateway
   ➜ experimentations git:(main) ✗ kubectl get gateway -A
-   NAMESPACE NAME CLASS ADDRESS PROGRAMMED AGE
+  NAMESPACE NAME CLASS ADDRESS PROGRAMMED AGE
   gateway-system public-gateway cilium 192.168.1.193 True 85d
 
 - HttpRoute
@@ -83,7 +83,7 @@ Backend Refs:
         Value:  /
 ```
 
-On peut conclure maintenant que l'association de la gateway et des httproute se charge de savoir quelle requête externe doit être envoyé vers quelle application. La gateway se charge de fournir le point d'entrée tandis que les httpRoute contiennent les règles de routage.
+On peut conclure que l'association de la gateway et des httproute se charge de savoir quelle requête externe doit être envoyé vers quelle application. La gateway se charge de fournir le point d'entrée tandis que les httpRoute contiennent les règles de routage.
 Le service, lui, se charge de savoir quels pods constituent actuellement le backend de l'application.
 
 ## Étape 3: expérimentation
@@ -108,7 +108,7 @@ Sep 30 17:38:10.339: 10.0.2.215:51732 (ingress) -> nginx/nginx-deployment-b99594
 ```
 
 Ici plusieurs choses intéréssantes se produisent.
-tout d'abord on pourrait s'attendre à pouvoir observer explicitement le trafic suivant:
+Tout d'abord on pourrait s'attendre à pouvoir observer explicitement le trafic suivant:
 
 ```
 requête entrante
@@ -120,14 +120,28 @@ service/backend
 pod
 ```
 
-Cependant, comme vu dans le devlog 20, le proxy de Cilium, Envoy, utilise du SNAT, ce qui masque notre ip source.
-Mais, nous pouvons quand même dégager des grandes étapes:
-Tout d'abord on peut voir la **three-way handshake** typique de TCP entre le trafic entrant (SNAT) et mon pod. (SYN - SYN, ACK - ACK)
+Cependant, comme vu dans le devlog 20 et dans les logs ci-dessus, le proxy de Cilium, Envoy, peux dans certain cas utiliser un système de SNAT, masquant alors notre adresse ip d'origine.
 
-Enuite on peut observer la requête "GET" via HTTP/1.1 sur mon url. Ici aussi, la source du trafic entrant (ingress) est masquée par le SNAT.
+Tant bien même nous pouvons quand même dégager des grandes étapes:
+Tout d'abord on peut voir la **three-way handshake** typique de TCP entre le trafic entrant, ici transformé très probablement en `10.0.2.215` par Envoy et mon pod. (SYN - SYN, ACK - ACK)
+
+Enuite on peut observer la requête "GET" (_via HTTP/1.1_) en réponse à ma requête curl. Ici aussi, la source du trafic entrant (ingress) semble masquée par le SNAT.
+
 Ce qui me semble pertinent d'être noté est que l'on peut voir ici:
 `Sep 30 17:37:09.963: 10.0.2.215:51732 (host) <- nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-stack FORWARDED (TCP Flags: ACK, PSH)`
-que la réponse est envoyé vers l'identité "**"host"**. C'est tout à fait normal, car Envoy est déployé en **deamonSet**.
-Le trafic est vu comme venant de même nœud car en Envoy utilise le SNAT et initialise un deuxième flux TCP (Envoy - Pod).
+La réponse qu'Hubble observe semble être est envoyé vers l'identité **"host"**. C'est qui est asez interessant. Il faut savoir qu'Envoy est déployé en **deamonSet**.
+Une piste légitime serait d'assumer que derrière cette identité host se cache Envoy car après tout c'est lui qui a initié la connexion. Le trafic retour pourrait alors aussi lui être redirigé de cette manière mais cela reste un point à creuser, notamment car le système d'identité Cilium ainsi que son mode de fonctionnement pourrait fausser cette théorie. Une autre piste pourrait être que le trafic observé au niveau du Pod provient de 10.0.2.215, tandis que Hubble est capable d'associer les événements HTTP à l'adresse externe 90.110.5.2. Les expérimentations du Devlog 20 avaient déjà montré que la Gateway/Envoy établit une communication backend vers le Pod, ce qui explique que la connexion soit évaluée comme provenant du cluster au niveau de la politique réseau.
 
-Le trafic suivant est un trafic tout à fait normal, reprenant les mêmes chose vu juste au dessus.
+# Prochaine du lab:
+
+- Où et comment le Service nginx-service / ClusterIP 10.96.184.22 intervient-il réellement dans le trafic observé ?
+  - Observer la Gateway avec Hubble
+  - Chercher le trafic correspondant au Service/ClusterIP
+  - Comparer ce que Hubble montre :
+    - côté Gateway
+    - côté Service/datapath
+    - côté Pod
+  - Vérifier expérimentalement si nous pouvons retrouver 10.96.184.22 dans les événements
+  - Comprendre à quel endroit Cilium fait la sélection du backend.
+
+Et ensuite répondre à cette question capable d'éclairer l'ensemble : pourquoi je vois 10.0.2.215 au niveau TCP alors que Hubble connaît 90.110.5.2 au niveau HTTP ?
