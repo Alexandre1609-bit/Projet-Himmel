@@ -1,542 +1,777 @@
-# Lab: Observation du traffic depuis une requête curl (externe) vers une application (pod)
+# Lab : observation du trafic depuis une requête curl externe vers une application (Pod)
+
+## Présentation
+
+- **Objectif :** reconstruire le chemin d'une requête HTTPS externe jusqu'à mon Pod Nginx et comprendre à quel moment Cilium intervient.
+- **Ce que j'ai trouvé :** la VIP `192.168.1.193` est présente dans le datapath BPF de Cilium, Envoy possède la route Gateway et un cluster upstream vers `nginx-service`, et Hubble permet d'observer une connexion vers le Pod depuis `10.0.2.215`.
+- **Ce qui reste ouvert :** je n'ai pas encore démontré le chemin exact `Gateway → Service ClusterIP → Pod`, ni relié de façon certaine tous les événements TCP et L7 à une seule connexion.
+
+> **Note de publication :** les adresses IP publiques, le domaine public et l'adresse MAC ont été remplacés par des valeurs de documentation. Les adresses privées du lab sont conservées, car elles sont nécessaires à la compréhension du datapath.
+
+---
 
 ## Objectifs
 
-Je vais de nouveau analyser le trafic bien que j'ai déjà analyser le trafic réseau via hubble pour résoudre un problème avec mes CNP.
-Le but ici est de chercher à comprendre en profondeur le chemin d'un paquet venant de l'extérieur jusqu'à mon application en le suivant avec hubble sans forcément prêter attention au SNAT/Envoy (_cf: devlog 20_).
+Le but de ce lab était de partir d'une requête HTTPS réellement envoyée depuis l'extérieur et d'essayer de reconstruire son chemin jusqu'à mon application Nginx dans Kubernetes.
 
-## Étape 1: portée de l'expérience
+Je voulais notamment comprendre :
 
-Je vais commencer à lister ce sur quoi nous allons travailler.
-Il faut savoir le trafic "publique", dans mon cluster, passe par une gateway, c'est donc une étape suppplémentaire à observer.
+- où intervient la Gateway ;
+- quel rôle joue Envoy ;
+- comment Cilium représente la Gateway et le Service dans son datapath ;
+- à quel moment le trafic devient du trafic interne au cluster ;
+- quelle adresse IP et quelle identité Cilium sont observées au niveau du Pod ;
+- si je pouvais réellement démontrer un chemin de type :
 
-- Gateway
-  ➜ experimentations git:(main) ✗ kubectl get gateway -A
-  NAMESPACE NAME CLASS ADDRESS PROGRAMMED AGE
-  gateway-system public-gateway cilium 192.168.1.193 True 85d
-
-- HttpRoute
-  ➜ experimentations git:(main) ✗ kubectl get httproute -A
-  NAMESPACE NAME HOSTNAMES AGE
-  nginx http-app-nginx ["projet-himmel.duckdns.org"] 85d
-  nginx http-to-https-redirect ["projet-himmel.duckdns.org"] 85d
-
-- Service
-  kubectl get svc -n nginx
-  NAME TYPE CLUSTER-IP EXTERNAL-IP PORT(S) AGE
-  nginx-service ClusterIP 10.96.184.22 <none> 80/TCP 99d
-
-- Endpointslice
-  ➜ experimentations git:(main) ✗ kubectl get endpointslice -n nginx
-  NAME ADDRESSTYPE PORTS ENDPOINTS AGE
-  nginx-service-8frzn IPv4 80 10.0.2.72 99d
-
-- pod
-  ➜ experimentations git:(main) ✗ kubectl get pods -n nginx -o wide
-  NAME READY STATUS RESTARTS AGE IP NODE NOMINATED NODE READINESS GATES
-  nginx-deployment-b995944fb-8v6jb 1/1 Running 1 (12m ago) 4d2h 10.0.2.72 node3 <none> <none>
-
-## Étape 2: mise au point
-
-Maintenant que l'on sait sur quoi on travail on peut dégager quelques informations importantes.
-tout d'abord, mon service est en clusterIP, il a donc une adresse ip sur laquelle il peut être joint.
-Le pod a lui aussi une ip (éphémère) sur laquelle il peut être joint, ici l'ip est **10.0.2.72**.
-Moins important dans le cadre de l'expérience mais on peut observer que le trafic est chiffré via HTTPS et que le trafic HTTP est redirigé vers HTTPS.
-Enfin, la gateway, porte d'entrée du cluster à elle aussi son ip.
-
-Avec tout cela on peut déjà établir un schéma simple:
-
-```
-ClusterIP nginx
-      |
-Endpointslice
-      |
-podIp nginx
+```text
+Client externe
+      ↓
+Gateway / Envoy
+      ↓
+Service
+      ↓
+Pod Nginx
 ```
 
-Ainsi qu'un autre plus détaillé:
+Au départ, je pensais pouvoir reconstruire ce chemin uniquement avec Hubble, `tcpdump`, les objets Kubernetes et les commandes de debug Cilium. En pratique, les observations ont montré plusieurs couches différentes et certaines ne sont pas directement visibles de la même manière.
 
-```
-Gateway
-      |
-HTTPRoute
-      |
-Service nginx / ClusterIP 10.96.184.22
-      |
-EndpointSlice
-      |
-Pod 10.0.2.72
+---
+
+## À noter
+
+Ce lab est volontairement exploratoire. Les hypothèses changent au fur et à mesure des observations.
+
+Je distingue donc autant que possible :
+
+- **ce qui est directement observé** dans une commande ou un log ;
+- **ce qui est fortement déduit** à partir de plusieurs observations ;
+- **ce qui reste une hypothèse** et doit encore être vérifié.
+
+C'est important ici, car plusieurs outils montrent des informations différentes sur le même trafic. Par exemple, Hubble peut afficher un événement TCP avec une source `10.0.2.215`, puis un événement HTTP avec une autre source. Je ne peux pas automatiquement considérer qu'il s'agit du même paquet ou de la même connexion.
+
+---
+
+# Étape 1 : portée de l'expérience
+
+Je pars d'une requête externe vers ma Gateway publique.
+
+La Gateway utilise l'adresse virtuelle :
+
+```text
+192.168.1.193
 ```
 
-Ensuite, pour plus de précision, je fournis ici le backend utilisé par les httproute:
+Cette adresse est une **VIP**, c'est-à-dire une adresse IP virtuelle. Elle n'est pas une adresse correspondant à une interface physique classique d'un nœud.
+
+Le Gateway est :
+
+```text
+GatewayClass: cilium
+Gateway: gateway-system/public-gateway
+```
+
+La Gateway expose les ports HTTP et HTTPS.
+
+Le service généré par Cilium est :
+
+```text
+cilium-gateway-public-gateway
+```
+
+avec notamment :
+
+```text
+Type:              LoadBalancer
+ClusterIP:         10.98.222.177
+LoadBalancer IP:   192.168.1.193
+Port 80:           NodePort 31719
+Port 443:          NodePort 31041
+Selector:          <none>
+Endpoints:         <none>
+ExternalTrafficPolicy: Cluster
+InternalTrafficPolicy: Cluster
+```
+
+Le fait que ce Service n'ait pas de selector ni d'Endpoints visibles dans l'objet Kubernetes m'a immédiatement interrogé. Je m'attendais à retrouver une relation classique `Service → EndpointSlice → Pod`.
+
+À ce stade, je ne peux cependant pas conclure que la Gateway « contourne les Services ». Je peux seulement constater que son Service généré ne présente pas la structure habituelle d'un Service applicatif avec selector et endpoints.
+
+Pour Nginx, le Service applicatif est différent :
+
+```text
+nginx-service
+ClusterIP: 10.96.184.22
+Port: 80
+```
+
+Son backend Pod a changé plusieurs fois pendant les expérimentations, à la suite de recréations du Pod. Il faut donc distinguer les différents snapshots du lab.
+
+---
+
+# Étape 2 : mise au point avec les CiliumNetworkPolicy
+
+Avant de chercher à reconstruire le chemin réseau, j'avais déjà essayé différentes CiliumNetworkPolicy.
+
+Une première tentative avec l'identité `world` m'avait notamment permis de constater qu'une policy contenant une règle `ingress` rendait l'accès entrant restrictif.
+
+J'ai donc commencé par une policy de ce type :
 
 ```yaml
-Backend Refs:
-      Group:
-      Kind:    Service
-      Name:    nginx-service
-      Port:    80
-      Weight:  1
-    Matches:
-      Path:
-        Type:   PathPrefix
-        Value:  /
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: l3-rule-test
+  namespace: nginx
+spec:
+  endpointSelector:
+    matchLabels:
+      app: nginx
+  ingress:
+    - fromEntities:
+        - world
 ```
 
-On peut conclure que l'association de la gateway et des httproute se charge de savoir quelle requête externe doit être envoyé vers quelle application. La gateway se charge de fournir le point d'entrée tandis que les httpRoute contiennent les règles de routage.
-Le service, lui, se charge de savoir quels pods constituent actuellement le backend de l'application.
+L'idée était simple : vérifier si l'identité `world` permettait d'autoriser le trafic provenant de l'extérieur.
 
-## Étape 3: expérimentation
-
-Après avoir lancé la commande `➜  experimentations git:(main) ✗ hubble observe --pod nginx/nginx-deployment-b995944fb-8v6jb -f`
-et accédé à ma page nginx, le trafic arrive.
-
-```bash
-➜  experimentations git:(main) ✗ hubble observe --pod nginx/nginx-deployment-b995944fb-8v6jb -f
-Sep 30 17:37:09.960: 10.0.2.215:51732 (ingress) -> nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-endpoint FORWARDED (TCP Flags: SYN)
-Sep 30 17:37:09.960: 10.0.2.215:51732 (host) <- nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-stack FORWARDED (TCP Flags: SYN, ACK)
-Sep 30 17:37:09.961: 10.0.2.215:51732 (ingress) -> nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-endpoint FORWARDED (TCP Flags: ACK)
-Sep 30 17:37:09.961: 10.0.2.215:51732 (ingress) -> nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-endpoint FORWARDED (TCP Flags: ACK, PSH)
-Sep 30 17:37:09.962: 90.110.5.2:52306 (ingress) -> nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) http-request FORWARDED (HTTP/1.1 GET https://projet-himmel.duckdns.org/)
-Sep 30 17:37:09.963: 10.0.2.215:51732 (host) <- nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-stack FORWARDED (TCP Flags: ACK, PSH)
-Sep 30 17:37:09.965: 90.110.5.2:52306 (ingress) <- nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) http-response FORWARDED (HTTP/1.1 200 6ms (GET https://projet-himmel.duckdns.org/))
-Sep 30 17:37:10.338: 90.110.5.2:52306 (ingress) -> nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) http-request FORWARDED (HTTP/1.1 GET https://projet-himmel.duckdns.org/favicon.ico)
-Sep 30 17:37:10.339: 90.110.5.2:52306 (ingress) <- nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) http-response FORWARDED (HTTP/1.1 404 1ms (GET https://projet-himmel.duckdns.org/favicon.ico))
-Sep 30 17:38:10.339: 10.0.2.215:51732 (ingress) -> nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-endpoint FORWARDED (TCP Flags: ACK, FIN)
-Sep 30 17:38:10.339: 10.0.2.215:51732 (host) <- nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-stack FORWARDED (TCP Flags: ACK, FIN)
-Sep 30 17:38:10.339: 10.0.2.215:51732 (ingress) -> nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-endpoint FORWARDED (TCP Flags: ACK)
-```
-
-Ici plusieurs choses intéréssantes se produisent.
-Tout d'abord on pourrait s'attendre à pouvoir observer explicitement le trafic suivant:
-
-```
-requête entrante
-      |
-gateway
-      |
-service/backend
-      |
-pod
-```
-
-Cependant, comme vu dans le devlog 20 et dans les logs ci-dessus, le proxy de Cilium, Envoy, peux dans certain cas utiliser un système de SNAT, masquant alors notre adresse ip d'origine.
-
-Tant bien même nous pouvons quand même dégager des grandes étapes:
-Tout d'abord on peut voir la **three-way handshake** typique de TCP entre le trafic entrant, ici transformé très probablement en `10.0.2.215` par Envoy et mon pod. (SYN - SYN, ACK - ACK)
-
-Enuite on peut observer la requête "GET" (_via HTTP/1.1_) en réponse à ma requête curl. Ici aussi, la source du trafic entrant (ingress) semble masquée par le SNAT.
-
-Ce qui me semble pertinent d'être noté est que l'on peut voir ici:
-`Sep 30 17:37:09.963: 10.0.2.215:51732 (host) <- nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-stack FORWARDED (TCP Flags: ACK, PSH)`
-La réponse qu'Hubble observe semble être est envoyé vers l'identité **"host"**. C'est qui est asez interessant. Il faut savoir qu'Envoy est déployé en **deamonSet**.
-Une piste légitime serait d'assumer que derrière cette identité host se cache Envoy car après tout c'est lui qui a initié la connexion. Le trafic retour pourrait alors aussi lui être redirigé de cette manière mais cela reste un point à creuser, notamment car le système d'identité Cilium ainsi que son mode de fonctionnement pourrait fausser cette théorie. Une autre piste pourrait être que le trafic observé au niveau du Pod provient de 10.0.2.215, tandis que Hubble est capable d'associer les événements HTTP à l'adresse externe 90.110.5.2. Les expérimentations du Devlog 20 avaient déjà montré que la Gateway/Envoy établit une communication backend vers le Pod, ce qui explique que la connexion soit évaluée comme provenant du cluster au niveau de la politique réseau.
-
-## Étape 4: observation de la gateway, recherche du trafic réel
-
-En se reseignant un peu plus en détail sur notre gataway nous pouvons observer quelque chose de préoccupant :
-
-```bash
-➜  homelab-k8s git:(main) kubectl describe service cilium-gateway-public-gateway -n gateway-system
-Name:                     cilium-gateway-public-gateway
-Namespace:                gateway-system
-Labels:                   gateway.networking.k8s.io/gateway-name=public-gateway
-                          io.cilium.gateway/owning-gateway=public-gateway
-Annotations:              <none>
-Selector:                 <none>
-Type:                     LoadBalancer
-IP Family Policy:         SingleStack
-IP Families:              IPv4
-IP:                       10.98.222.177
-IPs:                      10.98.222.177
-LoadBalancer Ingress:     192.168.1.193 (VIP)
-Port:                     port-80  80/TCP
-TargetPort:               80/TCP
-NodePort:                 port-80  31719/TCP
-Endpoints:                <none>
-Port:                     port-443  443/TCP
-TargetPort:               443/TCP
-NodePort:                 port-443  31041/TCP
-Endpoints:                <none>
-Session Affinity:         None
-External Traffic Policy:  Cluster
-Internal Traffic Policy:  Cluster
-Events:                   <none>
-```
-
-Je m'attendais à pouvoir filtrer le trafic de la gateway via hubble, cepdant comme le montre l'ouput ci-dessus la gateway n'est relié à aucun Selector, n'a aucun endpoint. Tout me laisse penser que la gateway, crée via Cilium, utilise un moyen de communication différent de `Selector -> EndpointSlice`.
+Le résultat a été un blocage du trafic vers Nginx. La Gateway retournait notamment :
 
 ```text
-LoadBalancer(Relié à la gateway, IP: 192.168.1.193)
-        |
-Service de de la gateway (IP: 10.98.222.177)
-        |
-pod Envoy
+HTTP/1.1 503 Service Unavailable
+server: envoy
+upstream connect error or disconnect/reset before headers.
+reset reason: connection timeout
 ```
 
-Cela complique la recherche du trafic et également la piste du proxy Envoy.
+Hubble confirmait que le trafic arrivant sur Nginx était refusé.
 
-J'ai également listé les pods Envoy :
+J'ai ensuite essayé `cluster` :
 
-```bash
-cilium-envoy-ldhw2  → 192.168.1.52   node3
-cilium-envoy-mgbdp  → 192.168.1.50   master
-cilium-envoy-vj9qh  → 192.168.1.110  node2
+```yaml
+ingress:
+  - fromEntities:
+      - cluster
 ```
 
-Aucun n'est associé à l'adresse ip **10.0.2.215** qui reste inconnue jusqu'à présent.
+Cela m'a permis de constater qu'une requête externe pouvait finalement atteindre Nginx lorsque la connexion backend était autorisée comme provenant du cluster.
 
-Aussi, les commandes suivantes:
+C'est à partir de là qu'une hypothèse a commencé à émerger : le client externe est bien externe au niveau de la Gateway, mais Envoy agit comme proxy et établit ensuite une nouvelle connexion vers le backend.
 
-```bash
-kubectl get pods -A | grep 10.0.2.215
-kubectl get svc -A | grep 10.0.2.215
-kubectl get endpointslice -A | get 10.0.2.215
+Cette hypothèse sera ensuite confrontée aux observations plus précises.
+
+---
+
+# Étape 3 : expérimentation avec `fromCIDR`
+
+J'ai ensuite voulu tester une approche basée uniquement sur les adresses IP privées :
+
+```yaml
+ingress:
+  - fromCIDR:
+      - 192.168.0.0/16
+      - 10.0.0.0/8
+      - 172.16.0.0/12
 ```
 
-ne retournent rien. Nous pouvons donc conclure pour le moment, à partir des commandes éffectuée et des information rassemblées que cette ip n'est pas associé à :
+L'idée était d'autoriser les trois grandes plages privées.
 
-- un pod;
-- un service;
-- Un endpointSlice;
-
-Sa provenance, d'un point de vue des objets Kubernetes "pur" n'est pour le moment innexpliquée: Ce n'est ni une IP de Pod, de Service ou d'EndpointSlice. Il faut donc inspecter directement le réseau du nœud.
-
-Ces nouveaux résultats nous permettent presque certainement de remettre en cause une des hypothèses principale :
-
-"10.0.2.215 est associée à un pod envoy et attribut son IP pour éffectuer du SNAT".
-
-Un détail important à noter est que dans les logs nous pouvons voir `10.0.2.215:53638 (host) <- nginx:80`.
-Cilium associe l'identité **host** à cette ip, aussi, les adresses des Pods de mon cluster se situent dans la plage 10.0.0.0/8. Cela rend plausible l'hypothèse d'une adresse de Pod, cependant cette plage est-elle réellement exclusivement réservée aux Pods ?
-
-Nous pouvons donc assumer que "10.0.2.215" est probablement un pod ? Mais nous ne savons pas encore d'où Cilium obtient cette ip.
-
-## Étape 5: observation au sein du nœud
-
-Découverte majeur ! En me connectant en SSH sur le nœud 3 (nœud hébergeant mon application) et en effectuant la commande suivante : `alexandre@node3:~$ ip addr | grep 10.0.2.215` nous obtenons **inet 10.0.2.215/32 scope global cilium_host**. La théorie précédente est donc écartée.
-
-On voit aussi que Cilium à associé plusieurs route à cette IP
-
-```bash
-10.0.0.0/24 via 10.0.2.215 dev cilium_host proto kernel src 10.0.2.215 mtu 1450
-10.0.1.0/24 via 10.0.2.215 dev cilium_host proto kernel src 10.0.2.215 mtu 1450
-10.0.2.0/24 via 10.0.2.215 dev cilium_host proto kernel src 10.0.2.215
-10.0.2.215 dev cilium_host proto kernel scope link
-```
-
-L'interface est aussi décrit comme "Cilium_host" ce qui coresspond à l'identité observé jusqu'à présent dans les logs.
-
-Cela permet d'établir un chemin réseau beaucoup plus clair.
-Pour reprendre les logs précédents :
-
-```bash
-➜  experimentations git:(main) ✗ hubble observe --pod nginx/nginx-deployment-b995944fb-8v6jb -f
-Sep 30 17:37:09.960: 10.0.2.215:51732 (ingress) -> nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-endpoint FORWARDED (TCP Flags: SYN)
-Sep 30 17:37:09.960: 10.0.2.215:51732 (host) <- nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-stack FORWARDED (TCP Flags: SYN, ACK)
-Sep 30 17:37:09.961: 10.0.2.215:51732 (ingress) -> nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-endpoint FORWARDED (TCP Flags: ACK)
-Sep 30 17:37:09.961: 10.0.2.215:51732 (ingress) -> nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-endpoint FORWARDED (TCP Flags: ACK, PSH)
-Sep 30 17:37:09.962: 90.110.5.2:52306 (ingress) -> nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) http-request FORWARDED (HTTP/1.1 GET https://projet-himmel.duckdns.org/)
-Sep 30 17:37:09.963: 10.0.2.215:51732 (host) <- nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-stack FORWARDED (TCP Flags: ACK, PSH)
-Sep 30 17:37:09.965: 90.110.5.2:52306 (ingress) <- nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) http-response FORWARDED (HTTP/1.1 200 6ms (GET https://projet-himmel.duckdns.org/))
-Sep 30 17:37:10.338: 90.110.5.2:52306 (ingress) -> nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) http-request FORWARDED (HTTP/1.1 GET https://projet-himmel.duckdns.org/favicon.ico)
-Sep 30 17:37:10.339: 90.110.5.2:52306 (ingress) <- nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) http-response FORWARDED (HTTP/1.1 404 1ms (GET https://projet-himmel.duckdns.org/favicon.ico))
-Sep 30 17:38:10.339: 10.0.2.215:51732 (ingress) -> nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-endpoint FORWARDED (TCP Flags: ACK, FIN)
-Sep 30 17:38:10.339: 10.0.2.215:51732 (host) <- nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-stack FORWARDED (TCP Flags: ACK, FIN)
-Sep 30 17:38:10.339: 10.0.2.215:51732 (ingress) -> nginx/nginx-deployment-b995944fb-8v6jb:80 (ID:30589) to-endpoint FORWARDED (TCP Flags: ACK)
-```
-
-Les observations permettent maintenant d'identifier **10.0.2.215** comme l'adresse IPv4 de l'interface **cilium_host** du nœud 3. Le trafic observé par Hubble est donc traité par le datapath Cilium du nœud, avant d'atteindre le Pod nginx 10.0.2.72. En revanche, nous n'avons pas encore reconstruit précisément le chemin emprunté par le paquet avant son apparition au niveau de cilium_host.
-
-Le problème étant résolu il nous reste des autres points à clarifier, que ce passe-t-il avant que le data path cilium agisse ?
-Quand est-il de la gateway et de son LoadBalancer (ip 192.168.1.193), de l'ip public "90.110.5.2" ?
-
-Pour le moment nous avons quelque chose qui pourrait s'approcher de cela :
+Pourtant, un trafic interne au cluster était lui aussi bloqué. Un extrait représentatif de Hubble était :
 
 ```text
-???
-|
-192.168.1.193
-|
-???
-|
-10.0.2.215 / cilium_host
-|
-10.0.2.72 / nginx
+Sep 7 19:10:49.942: default/test-client:37162 -> nginx/...:80 to-overlay FORWARDED (TCP Flags: SYN)
+Sep 7 19:10:49.950: default/test-client:37162 <> nginx/...:80 DENIED (TCP Flags: SYN)
+Sep 7 19:10:49.950: default/test-client:37162 <> nginx/...:80 Policy denied DROPPED (TCP Flags: SYN)
 ```
 
-Mais il manque encore des étapes cruciales: Pourquoi Huuble nous montre simultanément:
+Le résultat était intéressant : appartenir à une plage IP privée ne suffisait pas nécessairement à obtenir l'autorisation attendue.
+
+J'ai donc commencé à distinguer deux choses :
+
+1. l'adresse IP visible à un instant donné ;
+2. l'identité Cilium associée à la source du trafic.
+
+C'est à partir de là que l'investigation s'est déplacée vers le datapath réel.
+
+---
+
+# Étape 4 : observation de la Gateway et recherche du trafic réel
+
+Je commence par observer directement la VIP :
+
+```bash
+sudo tcpdump -ni any host 192.168.1.193
+```
+
+Lors d'une requête HTTPS externe, j'observe sur l'interface physique `eno1` un trafic de la forme :
 
 ```text
-TCP :
-10.0.2.215:51732
-        |
-10.0.2.72:80
+203.0.113.10:43188 > 192.168.1.193:443
+192.168.1.193:443 > 203.0.113.10:43188
 ```
 
-et
+L'ARP permet également d'observer que la VIP est annoncée avec une adresse MAC :
 
 ```text
-HTTP :
-90.110.5.2:52306
-        |
-nginx:80
+192.168.1.193 is-at 02:00:5e:10:00:01
 ```
 
-Cela soulève encore plus de questions :
+Ce que je peux démontrer ici est limité mais utile : sur l'interface physique observée, le trafic arrive bien à destination de `192.168.1.193` et je ne vois pas de réécriture d'adresse avant cette arrivée.
 
-- Pourquoi Hubble présente-t-il 10.0.2.215:51732 au niveau des événements TCP, alors qu'il associe la requête HTTP à 90.110.5.2:52306 ?
-- Où est passé 192.168.1.193, le VIP de la Gateway ?
-- Est-ce que 10.96.184.22, le ClusterIP de nginx-service, apparaît quelque part dans le datapath ?
+Je ne peux pas en déduire qu'il n'existe aucun NAT ailleurs dans le chemin. Je ne peux pas non plus conclure précisément à quel moment une éventuelle traduction de source intervient.
 
-# Étape 6: Investigation en profondeurs: différentes pistes possibles
+---
 
-Afin de procéder à des recherches avancées je me suis penché au niveau des pods Cilium, déployé en DaemonSet sur mon cluster. Il faut savoir que Cilium CNI est utilisable sur nos nœud, dans le CLI, cilium-dbg lui est propre aux pods Cilium, utilisable uniquement dans l'un d'entre eux, d'où le `kubectl exec` dans les commandes suivantes. Nous verrons que grâce à cilium-dbg nous avons pu extraire nombre d'informations pertinente.
+# Étape 5 : observation au sein du nœud
+
+Je cherche ensuite à savoir comment Cilium représente la VIP.
+
+Sur les trois nœuds, la commande :
 
 ```bash
-➜ homelab-k8s git:(main) ✗ kubectl -n kube-system exec ds/cilium -- cilium-dbg bpf lb list | grep 192.168.1.193
-192.168.1.193:443/TCP (0) 0.0.0.0:0 (26) (0) [LoadBalancer, l7-load-balancer] (L7LB Proxy Port: 19500)
-192.168.1.193:80/TCP (0) 0.0.0.0:0 (25) (0) [LoadBalancer, l7-load-balancer] (L7LB Proxy Port: 19500)
-192.168.1.193:0/ANY (0) 0.0.0.0:0 (0) (0) [LoadBalancer, non-routable]
+cilium-dbg bpf lb list | grep 192.168.1.193
 ```
 
-D'abord, notre gateway est d'une manière ou d'une autre connectée au Load-Balancer, il se pourrait que le trafic arriverait à notre gateway puis passerais par le L7LB proxy via le port 19500, qui n'est pas encore apparu dans les logs hubble. Avec les tests suivant nous pouvons conclure que le port **19500** n'est pas un port global à la gateway mais un port **local** au nœud. La gateway semble également associé à "0.0.0.0:0" qui semble être une entrée générique dans la représentation BPF de Cilium, mais la rien de sûr pour le moment. Aussi aucun trafic n'est visible avec hubble ?
+montre une entrée pour la VIP en HTTP et en HTTPS.
 
-```bash
-➜ homelab-k8s git:(main) ✗ kubectl -n kube-system exec cilium-49nn9 -- cilium-dbg bpf lb list | grep 192.168.1.193
-192.168.1.193:80/TCP (0) 0.0.0.0:0 (58) (0) [LoadBalancer, l7-load-balancer] (L7LB Proxy Port: 10152)
-192.168.1.193:443/TCP (0) 0.0.0.0:0 (59) (0) [LoadBalancer, l7-load-balancer] (L7LB Proxy Port: 10152)
-192.168.1.193:0/ANY (0) 0.0.0.0:0 (0) (0) [LoadBalancer, non-routable]
-➜ homelab-k8s git:(main) ✗ kubectl -n kube-system exec cilium-b9856 -- cilium-dbg bpf lb list | grep 192.168.1.193
-192.168.1.193:80/TCP (0) 0.0.0.0:0 (25) (0) [LoadBalancer, l7-load-balancer] (L7LB Proxy Port: 19500)
-192.168.1.193:443/TCP (0) 0.0.0.0:0 (26) (0) [LoadBalancer, l7-load-balancer] (L7LB Proxy Port: 19500)
-192.168.1.193:0/ANY (0) 0.0.0.0:0 (0) (0) [LoadBalancer, non-routable]
-➜ homelab-k8s git:(main) ✗ kubectl -n kube-system exec cilium-jgjln -- cilium-dbg bpf lb list | grep 192.168.1.193
-192.168.1.193:80/TCP (0) 0.0.0.0:0 (58) (0) [LoadBalancer, l7-load-balancer] (L7LB Proxy Port: 15206)
-192.168.1.193:0/ANY (0) 0.0.0.0:0 (0) (0) [LoadBalancer, non-routable]
-192.168.1.193:443/TCP (0) 0.0.0.0:0 (59) (0) [LoadBalancer, l7-load-balancer] (L7LB Proxy Port: 15206)
-```
-
-Après avoir listé chaque bpf lb avec `cilium-dbg bpf lb list` sur chaque nœud, on se rend compte que chaque nœud a une entrée BPF associée à la gateway, associant la **VIP** au proxy L7 local. Le trafic est bien load balancé mais via des ports **différents**.
-
-Pour ce qui est du service nginx :
-
-```bash
-➜ homelab-k8s git:(main) ✗ kubectl -n kube-system exec ds/cilium -- cilium-dbg bpf lb list | grep 10.96.184.22
-10.96.184.22:80/TCP (0) 0.0.0.0:0 (52) (0) [ClusterIP, non-routable]
-10.96.184.22:0/ANY (0) 0.0.0.0:0 (0) (0) [ClusterIP, non-routable]
-10.96.184.22:80/TCP (1) 10.0.2.116:80/TCP (52) (1)
-```
-
-On voit qu'il est aussi en lien avec pas mal de chose "0.0.0.0:0" mais surtout il est bien lié à mon pod nginx (10.0.2.116:80) dans le datapath Cilium !
-
-Nous obtenons donc dégagé de manière appoximative le schéma suivant :
+Chaque nœud possède notamment une association de type :
 
 ```text
-             VIP
-            192.168.1.193:80
-                    │
-          ┌─────────┼─────────┐
-          │         │         │
-        node1     node2     node3
-          │         │         │
-        :10152    :15206    :19500
-          │         │         │
-          └─────────┴─────────┘
-                  Envoy ?
-                    │
-                    ↓
-             HTTPRoute / Gateway
-                    │
-                    ↓
-             Service nginx
-           10.96.184.22:80
-                    │
-                    ↓
-             10.0.2.116:80
+192.168.1.193:80/TCP  [LoadBalancer, l7-load-balancer]
+192.168.1.193:443/TCP [LoadBalancer, l7-load-balancer]
 ```
 
-En voulant aller plus loin et en se connectant via SSH nous obtenons :
-
-Node2:
-
-```bash
-alexandre@pnode2:~$ sudo ss -lntp | grep -E '10152|19500|15206'
-LISTEN 0 4096 127.0.0.1:15206 0.0.0.0:_ users:(("cilium-envoy",pid=1322,fd=69))
-LISTEN 0 4096 127.0.0.1:15206 0.0.0.0:_ users:(("cilium-envoy",pid=1322,fd=68))
-LISTEN 0 4096 127.0.0.1:15206 0.0.0.0:_ users:(("cilium-envoy",pid=1322,fd=67))
-LISTEN 0 4096 127.0.0.1:15206 0.0.0.0:_ users:(("cilium-envoy",pid=1322,fd=66))
-LISTEN 0 4096 127.0.0.1:15206 0.0.0.0:_ users:(("cilium-envoy",pid=1322,fd=65))
-LISTEN 0 4096 127.0.0.1:15206 0.0.0.0:_ users:(("cilium-envoy",pid=1322,fd=64))
-```
-
-Le port 15206 associé à l'entrée BPF de notre gateway est écouté par Envoy !
-
-Sur le node3:
-
-```bash
-alexandre@node3:~$ sudo ss -lntp | grep -E '10152|19500|15206'
-LISTEN 0 4096 127.0.0.1:19500 0.0.0.0:_ users:(("cilium-envoy",pid=1634,fd=69))
-LISTEN 0 4096 127.0.0.1:19500 0.0.0.0:_ users:(("cilium-envoy",pid=1634,fd=68))
-LISTEN 0 4096 127.0.0.1:19500 0.0.0.0:_ users:(("cilium-envoy",pid=1634,fd=67))
-LISTEN 0 4096 127.0.0.1:19500 0.0.0.0:_ users:(("cilium-envoy",pid=1634,fd=66))
-LISTEN 0 4096 127.0.0.1:19500 0.0.0.0:_ users:(("cilium-envoy",pid=1634,fd=65))
-LISTEN 0 4096 127.0.0.1:19500 0.0.0.0:_ users:(("cilium-envoy",pid=1634,fd=64))
-```
-
-De même sur le node 3 !
-
-Et sur le controlPlane :
-
-```bash
-alexandre@masterode:~$ sudo ss -lntp | grep -E '10152|19500|15206'
-LISTEN 0 4096 127.0.0.1:10152 0.0.0.0:_ users:(("cilium-envoy",pid=1621,fd=69))
-LISTEN 0 4096 127.0.0.1:10152 0.0.0.0:_ users:(("cilium-envoy",pid=1621,fd=68))
-LISTEN 0 4096 127.0.0.1:10152 0.0.0.0:_ users:(("cilium-envoy",pid=1621,fd=67))
-LISTEN 0 4096 127.0.0.1:10152 0.0.0.0:_ users:(("cilium-envoy",pid=1621,fd=66))
-LISTEN 0 4096 127.0.0.1:10152 0.0.0.0:_ users:(("cilium-envoy",pid=1621,fd=65))
-LISTEN 0 4096 127.0.0.1:10152 0.0.0.0:_ users:(("cilium-envoy",pid=1621,fd=64))
-```
-
-Également la même chose !
-
-D'après les observations nous pouvons obtenir d'autres piste, la gateway est bien lié d'une manière ou d'une autre à Envoy. Le fait qu'Envoy écoute le trafic de notre gateway (qui est loadBalancé) sur chaque nœud peut nous informer d'une chose: Envoy pourrait récuperer le trafic de la gateway avant de le masquer, snat ? avec l'IP du host cilium présent sur le nœud (_cf; 10.0.2.215_) ?
-
-Nous pouvons donc imaginer les schémas suivant :
+avec un port de proxy L7 local différent selon le nœud :
 
 ```text
-MASTER
-192.168.1.193:80/443
-↓
-L7LB Proxy Port: 10152
-↓
-127.0.0.1:10152
-↓
-cilium-envoy
-
-NODE2
-192.168.1.193:80/443
-↓
-L7LB Proxy Port: 15206
-↓
-127.0.0.1:15206
-↓
-cilium-envoy
-
-NODE3
-192.168.1.193:80/443
-↓
-L7LB Proxy Port: 19500
-↓
-127.0.0.1:19500
-↓
-cilium-envoy
+master: 10152
+node2:  15206
+node3:  19500
 ```
 
-Donc nous avons 3 éléments qui partagent le **même patterne** :
+On retrouve également une entrée générique :
 
+```text
+192.168.1.193:0/ANY ... [LoadBalancer, non-routable]
+```
+
+Cette entrée ne doit pas être interprétée comme une connexion réelle vers `0.0.0.0:0`. Il s'agit d'une représentation interne du datapath BPF.
+
+### Ce que cela démontre
+
+Je peux démontrer que les trois nœuds ont une représentation locale de la VIP dans le datapath Cilium et qu'un proxy L7 lui est associé.
+
+Cela ne démontre pas encore qu'une requête donnée passe réellement par chacun de ces nœuds.
+
+---
+
+## Les ports L7 et Envoy
+
+Je me suis ensuite connecté en SSH sur les nœuds et j'ai vérifié les sockets en écoute avec `ss`.
+
+Sur node3, par exemple :
+
+```text
+127.0.0.1:19500  cilium-envoy
+```
+
+On retrouve de la même manière :
+
+```text
+master: 127.0.0.1:10152
+node2:  127.0.0.1:15206
+node3:  127.0.0.1:19500
+```
+
+Cela établit une forte corrélation entre les ports L7 indiqués par le datapath BPF et les listeners locaux du processus `cilium-envoy`.
+
+Je préfère cependant parler de corrélation plutôt que d'affirmer que « tout le trafic Gateway passe par ce port », car cela n'est pas démontré uniquement par `ss`.
+
+Une observation plus intéressante apparaît ensuite sur node3 :
+
+```text
+ESTAB ... 192.168.1.193:80 203.0.113.11:49620 users:("cilium-envoy",pid=1634,fd=62)
+```
+
+Ici, `ss` montre directement que le processus `cilium-envoy` possède une connexion TCP établie avec une adresse locale `192.168.1.193:80`.
+
+C'est une preuve plus forte de l'implication d'Envoy dans le trafic observé que la simple présence d'un listener.
+
+En revanche, je ne peux pas déterminer à partir de cette seule ligne le rôle exact de l'adresse distante ni reconstruire toute la chaîne amont/aval.
+
+---
+
+# Étape 6 : investigation en profondeur, différentes pistes possibles
+
+À ce stade, plusieurs hypothèses étaient possibles.
+
+### Hypothèse 1 : le trafic passe par un Service Kubernetes classique
+
+C'est la première chose que j'ai voulu vérifier, puisque mon application est exposée derrière un Service :
+
+```text
+nginx-service
+ClusterIP: 10.96.184.22
+```
+
+Cilium possède bien une représentation de ce Service dans son BPF load balancer.
+
+Selon les snapshots observés pendant le lab, j'ai notamment retrouvé des backends Pod différents, car le Pod Nginx a été recréé plusieurs fois.
+
+Dans un snapshot intermédiaire, l'entrée observée était par exemple :
+
+```text
+10.96.184.22:80/TCP -> 10.0.2.72:80/TCP
+```
+
+J'avais également observé `10.0.2.116` dans un autre état plus ancien du lab. Ces adresses ne doivent donc pas être mélangées : elles correspondent à des snapshots différents du Pod.
+
+Dans l'état final de l'expérience, le Pod observé est `10.0.2.244`.
+
+La présence de ces entrées BPF démontre que Cilium connaît la relation Service → backend. Elle ne démontre pas que la requête Gateway observée a effectivement utilisé le ClusterIP `10.96.184.22` sur son chemin exact.
+
+### Hypothèse 2 : Envoy établit directement la connexion vers le Pod
+
+Cette hypothèse devient plus intéressante lorsque j'observe la configuration runtime d'Envoy.
+
+---
+
+## Configuration runtime d'Envoy
+
+La commande :
+
+```bash
+cilium-dbg envoy admin routes
+```
+
+permet d'observer une configuration correspondant à la Gateway.
+
+Pour la route HTTPS, on retrouve notamment :
+
+```yaml
+name: gateway-system/cilium-gateway-public-gateway/listener-secure
+virtual_hosts:
+  - name: gateway-system/cilium-gateway-public-gateway/projet-himmel.example
+    domains:
+      - projet-himmel.example
+      - projet-himmel.example:*
+    routes:
+      - match:
+          prefix: /
+        route:
+          cluster: gateway-system/cilium-gateway-public-gateway/nginx:nginx-service:80
+```
+
+Pour HTTP, la route contient une redirection vers HTTPS.
+
+Cette observation est importante : le `HTTPRoute` Kubernetes a bien été traduit en configuration de routage runtime pour Envoy.
+
+Cela démontre la partie L7 du chemin : Envoy possède une règle qui associe la requête destinée au domaine à un cluster upstream correspondant à `nginx-service:80`.
+
+En revanche, une route HTTP n'est pas un « saut réseau » physique. Elle décrit la décision de routage L7 prise par Envoy.
+
+---
+
+## Le cluster upstream d'Envoy et l'EDS
+
+Je regarde ensuite les clusters runtime :
+
+```bash
+cilium-dbg envoy admin clusters
+```
+
+Sur node3, je retrouve notamment :
+
+```text
+gateway-system/cilium-gateway-public-gateway/nginx:nginx-service:80
+```
+
+avec :
+
+```text
+eds_service_name::nginx/nginx-service:80
+```
+
+et surtout un endpoint :
+
+```text
+10.0.2.244:80
+```
+
+avec des compteurs du type :
+
+```text
+cx_active::0
+cx_connect_fail::0
+cx_total::10
+rq_active::0
+rq_error::0
+rq_success::21
+rq_total::21
+health_flags::healthy
+```
+
+**EDS signifie Endpoint Discovery Service**, et non « Endpoint Detection Service ».
+
+Cette observation permet de faire un pas supplémentaire : Envoy connaît un cluster upstream correspondant au Service `nginx-service:80`, et l'EDS lui fournit actuellement l'endpoint `10.0.2.244:80`.
+
+Les compteurs montrent également qu'Envoy a traité des requêtes vers ce cluster. Je ne considère cependant pas le compteur `rq_total` comme la preuve qu'une requête précise du test correspond à l'un de ces événements.
+
+---
+
+# Étape 7 : analyse sur Linux et avec Hubble
+
+Je reviens ensuite à Hubble et au datapath Cilium.
+
+Une observation importante est la présence de l'adresse :
+
+```text
+10.0.2.215
+```
+
+Cette adresse correspond à l'interface `cilium_host` de node3 :
+
+```text
+inet 10.0.2.215/32 scope global cilium_host
+```
+
+Ce n'est donc :
+
+- ni l'IP LAN de node3 (`192.168.1.52`) ;
+- ni l'IP du Pod Nginx ;
+- ni le ClusterIP du Service ;
+- ni la VIP de la Gateway.
+
+C'est l'adresse de l'interface `cilium_host` de node3.
+
+La commande `cilium-dbg nodeid list` permet de retrouver les correspondances :
+
+```text
+NODE ID   IP ADDRESSES
+0x36d3    192.168.1.52
+          10.0.2.215
+0x4959    192.168.1.50
+          10.0.0.250
+0xc3a0    192.168.1.110
+          10.0.1.43
+```
+
+Cela m'a permis de comprendre que `10.0.2.215` n'était pas une IP Pod mystérieuse, mais bien une adresse liée au réseau Cilium de node3.
+
+---
+
+## Observation directe avec `cilium-dbg monitor`
+
+L'observation la plus intéressante du lab arrive avec :
+
+```bash
+cilium-dbg monitor --related-to 173
+```
+
+L'endpoint `173` correspond au Pod Nginx observé à ce moment-là.
+
+Le trafic TCP montre notamment :
+
+```text
+10.0.2.215:38162 -> 10.0.2.244:80  TCP SYN
+10.0.2.244:80 -> 10.0.2.215:38162  TCP SYN, ACK
+10.0.2.215:38162 -> 10.0.2.244:80  TCP ACK
+```
+
+Puis Hubble/Cilium remonte une requête HTTP :
+
+```text
+GET https://projet-himmel.example/ => 0
+```
+
+et une réponse :
+
+```text
+GET https://projet-himmel.example/ => 304
+```
+
+Ici, contrairement aux premières hypothèses, je peux être beaucoup plus précis.
+
+J'observe directement une communication entre :
+
+```text
+10.0.2.215:38162
+        ↓
+10.0.2.244:80
+```
+
+où :
+
+- `10.0.2.215` est le `cilium_host` de node3 ;
+- `10.0.2.244` est le Pod Nginx dans l'état final du test ;
+- l'endpoint Cilium du Pod est `173` ;
+- l'identité Cilium du Pod est `30589`.
+
+Cela démontre que cette connexion TCP atteint directement l'adresse du Pod depuis le contexte réseau Cilium de node3.
+
+En revanche, je n'ai pas observé dans cet événement une destination `10.96.184.22`. Je ne peux donc pas transformer cette observation en preuve d'un chemin réseau exact passant par le ClusterIP du Service.
+
+---
+
+## Une observation qui m'a d'abord semblé contradictoire
+
+Dans des observations Hubble précédentes, j'avais obtenu des événements comme :
+
+```text
+10.0.2.215:51732 (ingress) -> nginx/...:80  SYN
+```
+
+puis des événements L7 ressemblant à :
+
+```text
+203.0.113.12:52306 (ingress) -> nginx/...:80  http-request
+203.0.113.12:52306 (ingress) <- nginx/...:80  http-response 200
+```
+
+La première adresse correspond au contexte `cilium_host` observé sur le nœud, tandis que les événements HTTP montrent une autre source.
+
+Je ne peux pas simplement dire qu'Hubble « change l'IP » entre deux lignes. Les événements TCP et L7 ne sont pas nécessairement la représentation d'une seule et même connexion TCP. Il peut exister plusieurs connexions ou plusieurs frontières de proxy.
+
+Cette observation reste donc une question ouverte, plutôt qu'une preuve de NAT à un endroit précis.
+
+---
+
+## Test avec `tcpdump` sur le port du proxy L7
+
+J'ai également tenté :
+
+```bash
+sudo tcpdump -ni any port 19500
+```
+
+pendant une requête.
+
+Je n'ai rien observé.
+
+Au premier abord, cela semble contradictoire avec le fait que `ss` montre qu'Envoy écoute sur `127.0.0.1:19500` et qu'une entrée BPF associe la VIP à ce port.
+
+Mais cette absence d'observation ne suffit pas à démontrer qu'Envoy n'intervient pas.
+
+Le trafic peut être redirigé au niveau du datapath eBPF vers le proxy sans apparaître comme un trafic TCP classique visible par ce `tcpdump` sur le port `19500`.
+
+Je garde donc les deux observations :
+
+- `ss` montre qu'Envoy possède bien le listener local correspondant au port L7 ;
+- `tcpdump` ne voit pas de trafic TCP classique sur ce port pendant mon test.
+
+Je ne force pas une conclusion supplémentaire tant que je n'ai pas une observation permettant de relier précisément les deux.
+
+---
+
+# Observation complémentaire : les Services Cilium
+
+Cilium représente notamment :
+
+```text
+ID 61: 192.168.1.193:80/TCP  LoadBalancer
+ID 62: 192.168.1.193:443/TCP LoadBalancer
+ID 47: 10.96.184.22:80/TCP  ClusterIP
+```
+
+Pour le Service Nginx, on retrouve une association de backend de la forme :
+
+```text
+10.96.184.22:80/TCP
+    => 10.0.2.244:80/TCP
+```
+
+Cette relation est bien présente dans la représentation Cilium.
+
+J'ai toutefois essayé :
+
+```bash
+cilium-dbg monitor --related-to 47
+```
+
+pendant une requête, sans obtenir d'événement de trafic permettant de démontrer que cette requête particulière traversait le Service ID `47`.
+
+J'ai fait la même tentative avec les IDs de la Gateway :
+
+```bash
+cilium-dbg monitor --related-to 61
+cilium-dbg monitor --related-to 62
+```
+
+sans obtenir non plus l'observation directe attendue.
+
+Cela ne prouve pas que les Services ne sont pas utilisés. Cela montre simplement que cette méthode de monitoring ne m'a pas permis de relier directement les requêtes observées aux entrées de Service concernées.
+
+---
+
+# Prochaine étape du lab
+
+À ce stade, plusieurs questions restent ouvertes :
+
+1. Le trafic vers Nginx passe-t-il réellement par le ClusterIP `10.96.184.22`, ou Envoy utilise-t-il directement l'endpoint fourni par l'EDS ?
+2. À quel endroit précis intervient la traduction de source qui explique l'apparition de `10.0.2.215` ?
+3. Comment relier précisément les événements TCP observés par Hubble aux événements L7 générés par le proxy ?
+4. Pourquoi le trafic n'apparaît-il pas avec `tcpdump` sur le port local `19500` alors qu'Envoy est associé à ce port dans le datapath ?
+5. Quel est exactement le rôle du Service `cilium-gateway-public-gateway`, qui possède une ClusterIP mais aucun selector ni endpoint classique ?
+
+L'objectif n'est donc plus seulement de « trouver le chemin », mais de déterminer quelles observations permettent réellement de prouver chaque étape de ce chemin.
+
+---
+
+# Étape 8 : nouvelles observations
+
+Après les premières expérimentations, j'ai continué l'investigation avec l'objectif de remplacer progressivement les hypothèses par des observations plus directes.
+
+## VIP et datapath BPF
+
+La VIP `192.168.1.193` est présente sur les trois nœuds dans le BPF load balancer avec le marquage :
+
+```text
+[LoadBalancer, l7-load-balancer]
+```
+
+et un port de proxy L7 différent selon le nœud.
+
+Cela renforce l'idée que Cilium prend en charge localement la redirection vers le proxy L7. Cela ne signifie toujours pas que chaque nœud reçoit effectivement les requêtes externes.
+
+## Service Nginx
+
+Dans l'état final du test, le backend est :
+
+```text
+10.0.2.244:80
+```
+
+et Cilium possède une association active entre :
+
+```text
+10.96.184.22:80
+        ↓
+10.0.2.244:80
+```
+
+Ici, « active » désigne l'association du backend dans la représentation Cilium. Il ne faut pas l'interpréter comme « une connexion TCP active ».
+
+## Envoy
+
+La configuration runtime d'Envoy contient :
+
+```text
+gateway-system/cilium-gateway-public-gateway/nginx:nginx-service:80
+```
+
+et l'EDS fournit :
+
+```text
+10.0.2.244:80
+```
+
+L'ensemble forme une chaîne logique cohérente :
+
+```text
+Gateway / HTTPRoute
+        ↓
+Envoy route
+        ↓
+cluster upstream nginx:nginx-service:80
+        ↓
+EDS
+        ↓
+10.0.2.244:80
+```
+
+Cette chaîne est démontrée au niveau de la configuration et du runtime d'Envoy.
+
+Ce que je ne peux pas encore démontrer est que le paquet réseau observé par `cilium-dbg monitor` a physiquement traversé le ClusterIP `10.96.184.22` avant d'arriver sur `10.0.2.244`.
+
+---
+
+# Résultats et questions ouvertes
+
+## Démontré
+
+À la fin de l'investigation, plusieurs éléments sont clairement établis :
+
+- la Gateway utilise la VIP `192.168.1.193` ;
+- Cilium possède des entrées BPF LoadBalancer pour cette VIP sur les trois nœuds ;
+- ces entrées sont associées à un traitement L7 ;
+- les ports L7 observés dans le BPF correspondent à des listeners locaux de `cilium-envoy` ;
+- Envoy possède une configuration runtime correspondant au `HTTPRoute` de la Gateway ;
+- Envoy possède un cluster upstream correspondant à `nginx-service:80` ;
+- l'EDS fournit à Envoy l'endpoint `10.0.2.244:80` ;
+- le Pod Nginx possède l'endpoint Cilium `173` et l'identité `30589` dans l'état final observé ;
+- `10.0.2.215` est l'adresse `cilium_host` de node3 ;
+- `cilium-dbg monitor` permet d'observer directement une connexion `10.0.2.215:38162 → 10.0.2.244:80` ;
+- une requête HTTP est également visible au niveau L7 sur cet endpoint.
+
+## Très plausible / déduit
+
+Les observations rendent très plausible le fonctionnement suivant :
+
+```text
+Client externe
+      │
+      │ HTTPS
+      ▼
+VIP 192.168.1.193
+      │
+      ▼
+Cilium / traitement L7
+      │
+      ▼
+Envoy
+      │
+      │ route HTTPRoute
+      ▼
+cluster upstream nginx:nginx-service:80
+      │
+      │ EDS
+      ▼
+10.0.2.244:80
+      │
+      ▼
+Pod Nginx
+```
+
+Il est également très plausible que la connexion observée depuis `10.0.2.215` corresponde à la connexion interne établie vers le backend par l'infrastructure du nœud/proxy.
+
+Mais je garde volontairement une réserve sur la position exacte de chaque étape réseau, notamment sur le rôle du ClusterIP dans cette requête précise.
+
+## Non démontré
+
+Je n'ai pas encore démontré :
+
+- que le paquet de cette requête précise a traversé `10.96.184.22` comme destination réseau ;
+- l'endroit exact où une éventuelle traduction de source intervient ;
+- que les événements TCP et L7 observés par Hubble correspondent tous à une seule et même connexion ;
+- que `tcpdump` sur `19500` devrait nécessairement voir les paquets correspondant au traitement L7 ;
+- le chemin physique complet entre la VIP, Envoy et le Pod au niveau de chaque paquet.
+
+### Ce que je retiens du lab
+
+Le lab n'a donc pas permis de reconstruire chaque paquet de bout en bout, mais il a permis de faire quelque chose de plus intéressant que de simplement constater qu'une requête fonctionne : j'ai pu descendre progressivement dans les différentes couches et remplacer plusieurs suppositions par des observations concrètes.
+
+J'ai notamment commencé avec une représentation assez simple :
+
+```text
+Gateway → Service → Pod
+```
+
+Puis les observations m'ont obligé à distinguer :
+
+```text
 VIP
-192.168.1.193:<Port 443|80>
-
-Proxy local
-127.0.0.1:<port>
-
-cilium_host
-<ip host du node>
-
-Aussi en cherchant dans les informations obtenus avec cilium-dbg nous avons d'autres informations utiles:
-
-```bash
-Proxy Status: OK, ip 10.0.2.215, 0 redirects active on ports 10000-20000, Envoy: external (node3)
-
-Proxy Status: OK, ip 10.0.1.43, 0 redirects active on ports 10000-20000, Envoy: external (node 2)
+ ↓
+Cilium BPF LoadBalancer
+ ↓
+L7 / Envoy
+ ↓
+HTTPRoute
+ ↓
+Envoy upstream cluster
+ ↓
+EDS
+ ↓
+Pod endpoint
 ```
 
-Ici nous pouvons voir que chaque nœud a sa propre "host_address". On pourrait imaginer que Cilium utilise cette adresse pour le trafic interne ? Comme nous avons pu observer avec 10.0.2.215 ?
+Le point encore ouvert est précisément de déterminer comment cette chaîne de configuration se traduit en chemin réseau réel pour une connexion donnée.
 
-Maintenant il faudrait répondre à une question : **Que voit réellement Envoy comme adresse source lorsqu'il reçoit la requête ?**
-Car nous avons simultanément `10.0.2.215:51732 → nginx:80` et `90.110.5.2:52306 → nginx:80` dans nos logs hubble !
-
-## Étape 7: analyse sur Linux
-
-En lançant TCPdump sur l'ip de la gateway en parallèle d'une requête curl nous obtenons cela:
-
-```bash
-alexandre@node3:~$ sudo tcpdump -ni any host 192.168.1.193
-tcpdump: data link type LINUX_SLL2
-tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
-listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes
-09:38:36.035102 eno1  In  IP 90.110.5.2.43188 > 192.168.1.193.443: Flags [S], seq 1342766278, win 64240, options [mss 1460,sackOK,TS val 3163062716 ecr 0,nop,wscale 10], length 0
-09:38:36.035202 eno1  Out IP 192.168.1.193.443 > 90.110.5.2.43188: Flags [S.], seq 702102803, ack 1342766279, win 65160, options [mss 1460,sackOK,TS val 2294130416 ecr 3163062716,nop,wscale 7], length 0
-09:38:36.048875 eno1  In  IP 90.110.5.2.43188 > 192.168.1.193.443: Flags [.], ack 1, win 63, options [nop,nop,TS val 3163062731 ecr 2294130416], length 0
-09:38:36.061538 eno1  In  IP 90.110.5.2.43188 > 192.168.1.193.443: Flags [P.], seq 1:518, ack 1, win 63, options [nop,nop,TS val 3163062733 ecr 2294130416], length 517
-09:38:36.061632 eno1  Out IP 192.168.1.193.443 > 90.110.5.2.43188: Flags [.], ack 518, win 506, options [nop,nop,TS val 2294130442 ecr 3163062733], length 0
-09:38:36.066402 eno1  Out IP 192.168.1.193.443 > 90.110.5.2.43188: Flags [P.], seq 1:2897, ack 518, win 506, options [nop,nop,TS val 2294130447 ecr 3163062733], length 2896
-09:38:36.066438 eno1  Out IP 192.168.1.193.443 > 90.110.5.2.43188: Flags [P.], seq 2897:4572, ack 518, win 506, options [nop,nop,TS val 2294130447 ecr 3163062733], length 1675
-09:38:36.079360 eno1  In  IP 90.110.5.2.43188 > 192.168.1.193.443: Flags [.], ack 2897, win 61, options [nop,nop,TS val 3163062763 ecr 2294130447], length 0
-09:38:36.079360 eno1  In  IP 90.110.5.2.43188 > 192.168.1.193.443: Flags [.], ack 4572, win 60, options [nop,nop,TS val 3163062763 ecr 2294130447], length 0
-09:38:36.081648 eno1  In  IP 90.110.5.2.43188 > 192.168.1.193.443: Flags [P.], seq 518:598, ack 4572, win 60, options [nop,nop,TS val 3163062764 ecr 2294130447], length 80
-09:38:36.081648 eno1  In  IP 90.110.5.2.43188 > 192.168.1.193.443: Flags [P.], seq 598:708, ack 4572, win 60, options [nop,nop,TS val 3163062765 ecr 2294130447], length 110
-09:38:36.082182 eno1  Out IP 192.168.1.193.443 > 90.110.5.2.43188: Flags [.], ack 708, win 505, options [nop,nop,TS val 2294130463 ecr 3163062764], length 0
-09:38:36.084924 eno1  Out IP 192.168.1.193.443 > 90.110.5.2.43188: Flags [P.], seq 4572:5929, ack 708, win 505, options [nop,nop,TS val 2294130466 ecr 3163062764], length 1357
-09:38:36.097053 eno1  In  IP 90.110.5.2.43188 > 192.168.1.193.443: Flags [P.], seq 708:732, ack 5929, win 59, options [nop,nop,TS val 3163062782 ecr 2294130466], length 24
-09:38:36.097257 eno1  Out IP 192.168.1.193.443 > 90.110.5.2.43188: Flags [P.], seq 5929:5953, ack 732, win 505, options [nop,nop,TS val 2294130478 ecr 3163062782], length 24
-09:38:36.097334 eno1  Out IP 192.168.1.193.443 > 90.110.5.2.43188: Flags [F.], seq 5953, ack 732, win 505, options [nop,nop,TS val 2294130478 ecr 3163062782], length 0
-09:38:36.099418 eno1  In  IP 90.110.5.2.43188 > 192.168.1.193.443: Flags [F.], seq 732, ack 5929, win 59, options [nop,nop,TS val 3163062783 ecr 2294130466], length 0
-09:38:36.099468 eno1  Out IP 192.168.1.193.443 > 90.110.5.2.43188: Flags [.], ack 733, win 505, options [nop,nop,TS val 2294130480 ecr 3163062783], length 0
-09:38:36.110128 eno1  In  IP 90.110.5.2.43188 > 192.168.1.193.443: Flags [R], seq 1342767010, win 0, length 0
-09:38:36.110296 eno1  In  IP 90.110.5.2.43188 > 192.168.1.193.443: Flags [R], seq 1342767010, win 0, length 0
-09:38:36.111904 eno1  In  IP 90.110.5.2.43188 > 192.168.1.193.443: Flags [R], seq 1342767011, win 0, length 0
-09:38:41.048940 eno1  In  ARP, Request who-has 192.168.1.193 (f8:75:a4:7a:61:e8) tell 192.168.1.1, length 46
-09:38:41.048952 eno1  Out ARP, Reply 192.168.1.193 is-at f8:75:a4:7a:61:e8, length 46
-```
-
-Ce qui est curieux c'est que via TCP dump nous ne voyons pas de masquerading, SNAT, Nat ou tout autre changement d'adresse comme observé avec Hubble. Donc pour faire simple il n'y aurait aucun changement d'adresse entre le trafic externe (internet) et la gateway. Nous pouvons donc supposer que le changement d'adresse a lieu après le passage de la gateway ? Ce qui pourrait être cohérent avec les investigations éffectuées jusqu'à présent.
-
-_(Rappel d'hypothèse)_
-
-```text
-      VIP
-            192.168.1.193:80
-                    │
-                    |
-                Cilium LB
-          ┌─────────┼─────────┐
-          │         │         │
-        node1     node2     node3
-          │         │         │
-        :10152    :15206    :19500
-          │         │         │
-          └─────────┴─────────┘
-                  Envoy ?
-```
-
-Aussi, en relançant TCPdump cette fois-ci avec le port 19500, associé à la gateway et sur lequel Envoy écoute, nous obtenons rien.
-
-```bash
-alexandre@node3:~$ sudo tcpdump -ni any port 19500
-tcpdump: data link type LINUX_SLL2
-tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
-listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes`
-```
-
-Nous savons depuis l'invesigation via `cilium-dbg` qu'Envoy écoute sur le port 19500 du nœud 3. Les adresses n'ont pas changé et rien n'est présent dans le TCPdump du port 19500.
-Donc aucune intervention d'Envoy jusqu'à présent, du moins au niveau TCP, le trafic pourrait passer en interne par le datapath Cilium et donc éviter TCP. La piste qu'Envoy fait donc du SNAT ou autre est encore en jeu. Cependant ces affirmations sont à prendre avec du recul car le **Socket Statistics** (_ss_) de linux nous montre bien une connexion tcp établie associé à l'ip de la gateway
-
-```bash
-alexandre@node3:~$ sudo ss -ntp | grep cilium-envoy
-ESTAB 0 0 192.168.1.193:80 34.38.238.170:49620 users:(("cilium-envoy",pid=1634,fd=62))
-```
-
-# Prochaine du lab:
-
-- Où et comment le Service nginx-service / ClusterIP 10.96.184.22 intervient-il réellement dans le trafic observé ?
-  - Observer la Gateway avec Hubble
-  - Chercher le trafic correspondant au Service/ClusterIP
-  - Comparer ce que Hubble montre :
-    - côté Gateway
-    - côté Service/datapath
-    - côté Pod
-  - Vérifier expérimentalement si nous pouvons retrouver 10.96.184.22 dans les événements
-  - Comprendre à quel endroit Cilium fait la sélection du backend.
-
-Et ensuite répondre à cette question capable d'éclairer l'ensemble : pourquoi je vois 10.0.2.215 au niveau TCP alors que Hubble connaît 90.110.5.2 au niveau HTTP ?
+C'est probablement la prochaine étape intéressante du lab : ne plus seulement observer les composants séparément, mais essayer de corréler une seule requête avec les différents niveaux du datapath, du paquet Ethernet jusqu'à la décision L7.
