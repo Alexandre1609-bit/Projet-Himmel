@@ -52,7 +52,6 @@ Comme lors des tests précédents, notre namespace est surveillé par une applic
 syncPolicy:
   automated:
     prune: true
-
     selfHeal: true
 ```
 
@@ -68,7 +67,6 @@ J'ai volontairement passé les champs `prune` et `selfHeal` en "false" afin de n
 syncPolicy:
   automated:
     prune: false
-
     selfHeal: false
 ```
 
