@@ -29,3 +29,13 @@ spec:
             severity: critical
           annotations:
             summary: "Cpu usage > 60% detected"
+
+    - name: check-restart-count-last-10-min
+      rules:
+        - alert: RestartCount10min
+          expr: sum by (namespace, pod) (increase(kube_pod_container_status_restarts_total[10m])) > 10
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "More than 10 restarts detected in one pod in the last 10 minutes"
