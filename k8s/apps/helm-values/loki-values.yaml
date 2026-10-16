@@ -18,8 +18,7 @@ loki:
       ruler: ruler
       admin: admin
   persistence:
-    enabled: true
-    size: 10Gi
+    enabled: false
 
 backend:
   replicas: 0
