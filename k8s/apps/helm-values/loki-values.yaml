@@ -17,8 +17,12 @@ loki:
       chunks: chunks
       ruler: ruler
       admin: admin
+
+singleBinary:
+  replicas: 1
   persistence:
     enabled: false
+
 
 backend:
   replicas: 0
