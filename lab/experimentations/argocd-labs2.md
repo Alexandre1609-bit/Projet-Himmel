@@ -219,7 +219,7 @@ time="2026-10-11T18:08:38Z" level=info msg="Updated sync status: OutOfSync -> Sy
 
 time="2026-10-11T18:08:38Z" level=info msg="Update successful" app-namespace=argocd application=monitoring project=default
 
-time="2026-10-11T18:08:38Z" level=info msg="Reconciliation completed" app-namespace=argocd app_status_update_ms=0 application=monitoring auto_sync_ms=0 compare_app_state_ms=877 comparison-level=2 comparison_with_nothing_ms=0 dedup_ms=2 dest-name= dest-namespace=argocd dest-server="https://Kubernetes.default.svc" diff_ms=90 git_ms=778 health_ms=3 live_ms=1 normalize_application_ms=1 patch_ms=58 persist_app_status_ms=68 process_finalizers_ms=0 project=default refresh_app_conditions_ms=0 set_app_managed_resources_ms=46 setop_ms=0 settings_ms=1 sync_ms=0 time_ms=994
+time="2026-10-11T18:08:38Z" level=info msg="Reconciliation completed" app-namespace=argocd app_status_update_ms=0 application=monitoring auto_sync_ms=0 compare_app_state_ms=877 comparison-level=2 comparison_with_nothing_ms=0 dedup_ms=2 dest-name= dest-namespace=argocd dest-server="https://Kubernetes.default.svc" diff_ms=90 git_ms=778 health_ms=3 live_ms=1 normalize_application_ms=1 patch_ms=58 persist_app_status_ms=68 process_finalizers_ms=0 project=default refresh_app_conditions_ms=0 set_app_managed_resources_ms=46 setop_ms=0 settings_ms=1 sync_ms=0 time_ms=993
 
 time="2026-10-11T18:08:38Z" level=info msg="Refreshing app status (controller refresh requested), level (1)" app-namespace=argocd application=monitoring project=default
 
