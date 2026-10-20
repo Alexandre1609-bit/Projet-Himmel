@@ -1,8 +1,7 @@
-
 apiVersion: v1
 kind: Pod
 metadata:
-  name: ci-failure-test
+  name: ci-failure-test    
 spec:
   containers:
     - name: test
