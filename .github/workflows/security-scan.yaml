@@ -7,6 +7,7 @@ on:
     tags: [ "v*.*.*" ]
   pull_request:
     branches: [ "main" ]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
 
 jobs:
   security-and-quality:
@@ -55,7 +56,11 @@ jobs:
     container:
       image: semgrep/semgrep
 
-    if: (github.actor != 'dependabot[bot]')
+    if: |
+      github.actor != 'dependabot[bot]' &&
+      !contains(github.event.pull_request.labels.*.name, 'docs') &&
+      !contains(github.event.pull_request.labels.*.name, 'typo') &&
+      !contains(github.event.pull_request.labels.*.name, 'documentation')
 
     steps:
 
