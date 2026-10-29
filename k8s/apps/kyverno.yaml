@@ -12,6 +12,9 @@ spec:
       kind: CustomResourceDefinition
       jsonPointers:
         - /spec/preserveUnknownFields
+        - /metadata/annotations
+        - /metadata/labels
+
   project: default
   source:
     repoURL: "https://kyverno.github.io/kyverno/"
