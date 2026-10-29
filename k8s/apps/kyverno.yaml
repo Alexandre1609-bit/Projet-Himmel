@@ -12,9 +12,6 @@ spec:
       kind: CustomResourceDefinition
       jsonPointers:
         - /spec/preserveUnknownFields
-    - group: deletingpolicies.policies.kyverno.io
-      kind: CustomResourceDefinition
-      jsonPointers:
         - /metadata/annotations
         - /metadata/labels
 
