@@ -18,10 +18,27 @@ spec:
         app: nginx
         env: prod
     spec:
-      nodeName: node3
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        runAsNonRoot: true
+        runAsUser: 101
+        runAsGroup: 101
+        fsGroup: 101
       containers:
         - name: nginx
-          image: nginx:1.14.2
+          image: nginx/nginx-unprivileged:1.30.6
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 101
+            runAsGroup: 101
+            allowPrivilegeEscalation: false
+            privileged: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
           resources:
             requests:
               memory: "64Mi"
@@ -30,13 +47,10 @@ spec:
               memory: "128Mi"
               cpu: "500m"
           ports:
-            - containerPort: 80
+            - containerPort: 8080
           volumeMounts:
             - mountPath: "/var/www/html"
               name: mypd
-          securityContext:
-            allowPrivilegeEscalation: false
-            privileged: false
       volumes:
         - name: mypd
           persistentVolumeClaim:
@@ -107,4 +121,4 @@ spec:
     - name: http-nginx
       protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: 8080
