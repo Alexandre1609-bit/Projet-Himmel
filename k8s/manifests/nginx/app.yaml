@@ -29,6 +29,7 @@ spec:
         - name: nginx
           image: nginx/nginx-unprivileged:1.30.6
           securityContext:
+            readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 101
             runAsGroup: 101
@@ -49,12 +50,20 @@ spec:
           ports:
             - containerPort: 8080
           volumeMounts:
-            - mountPath: "/var/www/html"
-              name: mypd
+            - name: mypd
+              mountPath: "/var/www/html"
+            - name: tmp
+              mountPath: "/tmp"
+            - name: cache
+              mountPath: "/var/cache/nginx"
       volumes:
         - name: mypd
           persistentVolumeClaim:
             claimName: myclaim
+        - name: tmp
+          emptyDir: {}
+        - name: cache
+          emptyDir: {}
 
 ---
 apiVersion: v1
