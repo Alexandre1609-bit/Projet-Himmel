@@ -34,6 +34,8 @@ jobs:
           scanners: 'misconfig,secret'
           format: table
           ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
 
       - name: Trivy Security Audit - Vulnerabilities (CVEs)
         uses: aquasecurity/trivy-action@v0.36.0
@@ -44,6 +46,8 @@ jobs:
           format: table
           ignore-unfixed: true
           skip-setup-trivy: true
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
 
       - name: gitleaks
         uses: gitleaks/gitleaks-action@v3
