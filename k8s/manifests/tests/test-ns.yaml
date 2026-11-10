@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: test-ns
-  labels:
-    env: prod
-  annotations:
-    argocd.argoproj.io/sync-options: Prune=false
