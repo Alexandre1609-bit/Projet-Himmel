@@ -27,7 +27,7 @@ spec:
         fsGroup: 101
       containers:
         - name: nginx
-          image: nginx/nginx-unprivileged:1.30.6
+          image: nginx/nginx-unprivileged:1.30.6-alpine-slim
           securityContext:
             readOnlyRootFilesystem: true
             runAsNonRoot: true

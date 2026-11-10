@@ -23,7 +23,7 @@ spec:
             fsGroup: 101
           containers:
             - name: duckdns-curl
-              image: curlimages/curl:8.21.0
+              image: curlimages/curl:8.23.0
               env:
                 - name: DUCKDNS_TOKEN
                   valueFrom:
