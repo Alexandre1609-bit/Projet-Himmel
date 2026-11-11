@@ -42,7 +42,7 @@ jobs:
         with:
           scan-type: 'fs'
           scan-ref: '.'
-          scanners: 'vuln'
+          scanners: 'vuln' #filet de sécurité supplémentaire pour applicatif (et donc des fichiers de dépendances) quand ça arrivera dans le repo.
           format: table
           ignore-unfixed: true
           skip-setup-trivy: true
