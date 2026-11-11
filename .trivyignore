@@ -1,1 +1,22 @@
 k8s/manifests/jobs/dns-token.yaml
+
+# krb5 (curlimages/curl:8.23.0) ! CVE côté serveur KDC/kadmind, non atteignables :
+# le conteneur fait une seule requête HTTPS vers DuckDNS, sans Kerberos donc ignore tempo acceptable pour pouvoir push
+# Correctif : krb5 1.22.3-r0, pas encore d'image curl reconstruite d'après page officielle docker de l'image
+# À retirer dès qu'une nouvelle image curl est disponible !
+CVE-2026-107364 exp:2026-12-11
+CVE-2026-112315 exp:2026-12-11
+CVE-2026-112316 exp:2026-12-11
+CVE-2026-112317 exp:2026-12-11
+CVE-2026-112318 exp:2026-12-11
+CVE-2026-112319 exp:2026-12-11
+CVE-2026-112320 exp:2026-12-11
+CVE-2026-112321 exp:2026-12-11
+CVE-2026-112322 exp:2026-12-11
+CVE-2026-112323 exp:2026-12-11
+CVE-2026-118380 exp:2026-12-11
+CVE-2026-119079 exp:2026-12-11
+CVE-2026-40355 exp:2026-12-11
+CVE-2026-40356 exp:2026-12-11
+CVE-2026-71199 exp:2026-12-11
+CVE-2026-71200 exp:2026-12-11
