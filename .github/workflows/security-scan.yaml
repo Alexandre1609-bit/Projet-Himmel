@@ -74,7 +74,7 @@ jobs:
     name: Semgrep scan
     runs-on: ubuntu-latest
     container:
-      image: semgrep/semgrep:1.186.0
+      image: semgrep/semgrep:1.186.0@sha256:6e1b04340e60e910fbb4ddbf3c857ab0918f064417ad5ac530014ccb3cf8c8f1
 
     if: |
       github.actor != 'dependabot[bot]' &&
