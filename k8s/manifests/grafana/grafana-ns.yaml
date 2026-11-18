@@ -5,19 +5,5 @@ metadata:
   name: grafana
   labels:
     tier: infra
-
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: alloy
-  labels:
-    tier: infra
-
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: loki
-  labels:
-    tier: infra
+    pod-security.kubernetes.io/warn: baseline
+    pod-security.kubernetes.io/audit: baseline
