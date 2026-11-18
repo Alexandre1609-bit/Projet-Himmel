@@ -6,3 +6,6 @@ metadata:
   labels:
     env: prod
     tier: app
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/audit: restricted
