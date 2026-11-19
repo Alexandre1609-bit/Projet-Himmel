@@ -5,7 +5,7 @@ metadata:
   name: require-labels-on-resources
 spec:
   validationActions:
-    - Deny
+    - Audit
   matchConstraints:
     namespaceSelector:
       matchExpressions:
@@ -30,5 +30,5 @@ spec:
         resources: ["jobs", "cronjobs"]
 
   validations:
-    - message: "Please add at least one of the following labels to the resource: 'env', 'prod', or 'team'."
-      expression: "has(object.metadata.labels) && ['env', 'prod', 'team'].exists(k, k in object.metadata.labels)"
+    - message: "Please add the labels 'app.kubernetes.io/name' and 'env' (value: prod or test) to the resource."
+      expression: "has(object.metadata.labels) && 'app.kubernetes.io/name' in object.metadata.labels && 'env' in object.metadata.labels && object.metadata.labels['env'] in ['prod', 'test']"
