@@ -5,3 +5,5 @@ metadata:
   name: cilium-secrets
   labels:
     tier: infra
+    pod-security.kubernetes.io/warn: baseline
+    pod-security.kubernetes.io/audit: baseline
