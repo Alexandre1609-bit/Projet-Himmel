@@ -5,7 +5,7 @@ metadata:
   name: nginx-deployment
   namespace: nginx
   labels:
-    app: nginx
+    app.kubernetes.io/name: nginx
     env: prod
 spec:
   replicas: 1
@@ -15,7 +15,7 @@ spec:
   template:
     metadata:
       labels:
-        app: nginx
+        app.kubernetes.io/name: nginx
         env: prod
     spec:
       securityContext:
@@ -72,6 +72,7 @@ metadata:
   name: pv0003
   labels:
     env: prod
+    app.kubernetes.io/name: nginx
 spec:
   capacity:
     storage: 1Gi
@@ -102,6 +103,7 @@ metadata:
   namespace: nginx
   labels:
     env: prod
+    app.kubernetes.io/name: nginx
 spec:
   accessModes:
     - ReadWriteOnce
@@ -122,6 +124,7 @@ metadata:
   namespace: nginx
   labels:
     env: prod
+    app.kubernetes.io/name: nginx
 spec:
   type: ClusterIP
   selector:
