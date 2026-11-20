@@ -5,7 +5,7 @@ metadata:
   name: require-labels-on-resources
 spec:
   validationActions:
-    - Audit
+    - Deny
   matchConstraints:
     namespaceSelector:
       matchExpressions:
