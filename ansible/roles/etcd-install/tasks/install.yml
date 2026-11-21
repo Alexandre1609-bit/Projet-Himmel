@@ -1,0 +1,32 @@
+---
+- name: "Download etcd tar and check his SHA256"
+  ansible.builtin.get_url:
+    url: "https://github.com/etcd-io/etcd/releases/download/{{ etcd_version }}/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
+    dest: "/tmp/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
+    mode: '0644'
+    checksum: "sha256:https://github.com/etcd-io/etcd/releases/download/{{ etcd_version }}/SHA256SUMS"
+
+- name: "Extract etcd tar"
+  ansible.builtin.unarchive:
+    src: "/tmp/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
+    dest: "/tmp"
+    remote_src: true
+
+
+- name: "Install etcdctl and etcdutl binaries"
+  ansible.builtin.copy:
+    src: "/tmp/etcd-{{ etcd_version }}-linux-amd64/{{ item }}"
+    dest: "/usr/local/bin"
+    mode: '0755'
+    remote_src: true
+  loop:
+    - etcdctl
+    - etcdutl
+
+- name: "Check if correctly installed"
+  ansible.builtin.command:
+    cmd: "{{ item }} version"
+  loop:
+    - etcdctl
+    - etcdutl
+  changed_when: false
