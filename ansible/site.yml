@@ -7,3 +7,9 @@
     - role: os-hardening
     - role: containerd
     - role: kubernetes
+
+- name: "Install etcd binaries on masters"
+  hosts: [masters]
+  become: true
+  roles:
+    - role: etcd-install
