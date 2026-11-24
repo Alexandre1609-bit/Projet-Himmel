@@ -8,8 +8,9 @@
     - role: containerd
     - role: kubernetes
 
-- name: "Install etcd binaries on masters"
+- name: "Install etcd binaries and copy etcd-snapshot script, service and timer on masters"
   hosts: [masters]
   become: true
   roles:
-    - role: etcd-install
+    - role: etcd_install
+    - role: etcd_backup

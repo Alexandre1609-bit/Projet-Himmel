@@ -1,0 +1,3 @@
+---
+- name: "Copy etcd-script, timer and service to Masternode"
+  ansible.builtin.include_tasks: setup.yml

@@ -1,0 +1,6 @@
+[Unit]
+Description=Take an etcd snapshot and keep the 5 most recent
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/etcd-snapshot.sh
