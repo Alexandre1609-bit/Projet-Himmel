@@ -1,0 +1,6 @@
+[Unit]
+Description=Pull etcd snapshots from master and delete copies older than 30 days
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/etcd-pull.sh

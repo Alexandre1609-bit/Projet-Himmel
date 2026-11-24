@@ -1,0 +1,9 @@
+[Unit]
+Description=Pull etcd snapshots 10min after boot, then every 2h
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=2h
+
+[Install]
+WantedBy=timers.target
