@@ -1,3 +1,12 @@
 ---
+- name: "Check if etcdctl installed"
+  ansible.builtin.command:
+    cmd: "etcdctl version"
+  register: etcd_install_etcdctl_check
+  failed_when: false
+  changed_when: false
+  check_mode: false
+
 - name: "Install etcd binaries"
   ansible.builtin.include_tasks: install.yml
+  when: etcd_install_version[1:] not in etcd_install_etcdctl_check.stdout
