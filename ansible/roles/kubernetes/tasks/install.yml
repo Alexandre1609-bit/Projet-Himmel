@@ -8,12 +8,12 @@
 - name: "Download Kubernetes public signing key"
   ansible.builtin.get_url:
     url: https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/Release.key
-    dest: /tmp/kubernetes-release.key
+    dest: /etc/apt/keyrings/kubernetes-release.key
     mode: '0644'
 
 - name: "Dearmor Kubernetes key"
   ansible.builtin.command:
-    cmd: gpg --dearmor --yes -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /tmp/kubernetes-release.key
+    cmd: gpg --dearmor --yes -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /etc/apt/keyrings/kubernetes-release.key
     creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
 - name: "Add Kubernetes apt repository"
