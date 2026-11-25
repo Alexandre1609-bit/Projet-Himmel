@@ -1,2 +1,2 @@
 ---
-etcd_version: "v3.5.25"
+etcd_install_version: "v3.5.25"
