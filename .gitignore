@@ -11,6 +11,7 @@ Thumbs.db
 # --- Ansible ---
 *.retry
 *.log
+.ansible
 
 # --- Python ---
 __pycache__/
