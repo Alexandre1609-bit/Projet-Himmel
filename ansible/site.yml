@@ -4,7 +4,7 @@
   become: true
 
   roles:
-    - role: os-hardening
+    - role: os_hardening
     - role: containerd
     - role: kubernetes
 
