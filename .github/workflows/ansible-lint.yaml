@@ -1,0 +1,22 @@
+name: ansible-lint
+on:
+  pull_request:
+    branches: ["main", "stable", "release/v*"]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+    paths:
+      - "ansible/"
+
+permissions:
+  contents: read
+
+jobs:
+  ansible-lint:
+    name: Ansible Lint
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Run ansible-lint
+        uses: ansible/ansible-lint@b5609548ec49df35aabb89b6cb71de8f398cd195 #v26.11.1
+        with:
+          working_directory: "ansible"
+          requirements_file: "requirements.yml"
