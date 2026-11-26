@@ -1,5 +1,4 @@
 //cilium
-pod_cidr       = "10.0.0.0/16" //Must match kubeadm --pod-network-cidr
 cilium_version = "1.16.0" //See https://github.com/cilium/cilium/releases
 
 
