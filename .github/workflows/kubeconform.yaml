@@ -31,4 +31,4 @@ jobs:
 
       - name: run kubeconform scan
         run: |
-          kubeconform -ignore-filename-pattern 'k8s/apps/helm-values/' -strict -kubernetes-version 1.31.0 -summary -schema-location default -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' ./k8s/
+          /kubeconform -ignore-filename-pattern 'k8s/apps/helm-values/' -strict -kubernetes-version 1.31.0 -summary -schema-location default -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' ./k8s/
