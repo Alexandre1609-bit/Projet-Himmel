@@ -1,0 +1,34 @@
+---
+name: kubeconform
+
+on:
+  push:
+    branches: [ "main" ]
+    tags: [ "v*.*.*" ]
+    paths:
+      - "k8s/**"
+      - ".github/workflows/kubeconform.yaml"
+  pull_request:
+    branches: [ "main" ]
+    types: [opened, synchronize, reopened]
+    paths:
+      - "k8s/**"
+      - ".github/workflows/kubeconform.yaml"
+
+permissions:
+  contents: read
+
+jobs:
+  kubeconform:
+    name: kubeconform check
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/yannh/kubeconform:v0.8.0-alpine@sha256:6b90a5f23d846140ce0194fe050b1995e546eba938f3a6bf10c039dd5e24588f
+
+    steps:
+      - name: code checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: run kubeconform scan
+        run: |
+          kubeconform -ignore-filename-pattern 'k8s/apps/helm-values/' -strict -kubernetes-version 1.31.0 -summary -schema-location default -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' ./k8s/
