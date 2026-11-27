@@ -21,4 +21,14 @@ repos:
     hooks:
       - id: gitlint
 
+  - repo: local
+    hooks:
+      - id: kubeconform
+        name: kubeconform scan
+        language: system
+        entry: kubeconform -ignore-filename-pattern 'k8s/apps/helm-values/' -strict -kubernetes-version 1.31.0 -summary -schema-location default -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' ./k8s/
+        files: ^k8s/
+        pass_filenames: false
+
+
   # - repo: https://github.com/markdownlint/markdownlint (future implementation)
